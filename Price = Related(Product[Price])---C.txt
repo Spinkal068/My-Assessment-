@@ -1,0 +1,189 @@
+*******Price = Related(Product[Price])---Calculated Column
+*******Revenue = Selling(Quantity)*Selling(Price)
+*******Revenue Measure = SumX(Selling,Selling[price]*selling[Quantity])
+                   |
+                  All line(each row)
+
+************  CalenderAuto- CALENDARAUTO([fiscal_year_end_month])  
+
+CALENDARAUTO() will return all dates between January 1, 2010 and December 31, 2011.
+
+CALENDARAUTO(3) will return all dates between April 1, 2010 and March 31, 2012.
+
+
+***********CALENDAR(<start_date>, <end_date>)
+
+The following formula returns a table with dates between January 1st, 2015 and December 31st, 2021.
+
+DAX
+
+CALENDAR= CALENDAR (DATE (2015, 1, 1), DATE (2021, 12, 31))
+For a data model which includes actual sales data and future sales forecasts, the following expression returns a date table covering the range of dates in both the Sales and Forecast tables.
+
+DAX
+
+CALENDAR= CALENDAR (MINX (Sales, [Date]), MAXX (Forecast, [Date]))
+
+*********If -IF(<logical_test>, <value_if_true>[, <value_if_false>])
+Price Group =IF('Product'[List Price] < 500,"Low")
+
+Price Group =IF('Product'[List Price] < 500,"Low","High")
+
+Price Group =IF('Product'[List Price] < 500,"Low", IF('Product'[List Price] < 1500,"Medium","High"))
+
+********** Count - COUNT(<column>) 
+Counts the number of rows in the specified column that contain non-blank values.
+
+Count = COUNT([ShipDate])
+
+**********Countrows -COUNTROWS([<table>])
+
+The COUNTROWS function counts the number of rows in the specified table, or in a table defined by an expression.
+Countrows= COUNTROWS('Orders')
+
+**********COUNTA-COUNTA(<column>)
+COUNTA function (DAX) counts the number of cells in a column that are not empty. It counts not just numeric values, but also rows that contain nonblank values such as text, dates, and logical values.
+COUNTA=COUNTA(‘Reseller'[Phone])
+
+**********DISTINCTCOUNT-DISTINCTCOUNT(<column>)
+Counts the number of distinct values in a column
+
+DISTINCTCOUNT= DISTINCTCOUNT(ResellerSales_USD[SalesOrderNumber])
+
+**********COUNTBLANK-COUNTBLANK(<column>) 
+Counts the number of blank cells in a column.
+
+COUNTBLANK= COUNTBLANK(Reseller[BankName])
+
+
+**********CALCULATE-CALCULATE(<expression>[, <filter1> [, <filter2> [, …]]])
+
+Total sales on the last selected date = CALCULATE(SUM ( Sales[Sales Amount] ),'Sales'[OrderDateKey] = MAX ( 'Sales'[OrderDateKey] ))
+Blue Revenue =CALCULATE(SUM(Sales[Sales Amount]),'Product'[Color] = "Blue")
+Revenue % Total Channel = DIVIDE(SUM(Sales[Sales Amount]),CALCULATE(SUM(Sales[Sales Amount]),REMOVEFILTERS('Sales Order'[Channel])))
+Customer Segment =IF(CALCULATE(SUM(Sales[Sales Amount]), ALLEXCEPT(Customer, Customer[CustomerKey])) < 2500,"Low","High")
+
+
+**********FILTER --FILTER(<table>,<filter>) 
+
+Returns a table that represents a subset of another table or expression.
+
+FILTER=FILTER('InternetSales_USD', RELATED('SalesTerritory'[SalesTerritoryCountry])<>"United States")
+
+FILTER=SUMX(FILTER('InternetSales_USD', RELATED('SalesTerritory'[SalesTerritoryCountry])<>"United States"),'InternetSales_USD'[SalesAmount_USD])
+
+**********ALL--ALL( [<table> | <column>[, <column>[, <column>[,…]]]] )
+
+Returns all the rows in a table, or all the values in a column, ignoring any filters that might have been applied. This function is useful for clearing filters and creating calculations on all the rows in a table.
+
+ALL= SUMX(ResellerSales_USD, ResellerSales_USD[SalesAmount_USD])/SUMX(ALL(ResellerSales_USD), ResellerSales_USD[SalesAmount_USD])
+
+ALL= SUMX(ResellerSales_USD, ResellerSales_USD[SalesAmount_USD])/CALCULATE( SUM( ResellerSales_USD[SalesAmount_USD]), ALL(DateTime[CalendarYear]))
+
+
+********** Operator - 
+
+********** AND-AND(<logical1>,<logical2>)
+
+Checks whether both arguments are TRUE, and returns TRUE if both arguments are TRUE. Otherwise returns false.
+
+AND &&= Calculate([revenue Measure],filter(product,product[Price]>2&&product[Price]<=4.22))
+
+**********OR-OR(<logical1>,<logical2>)
+
+Checks whether one of the arguments is TRUE to return TRUE. The function returns FALSE if both arguments are FALSE.
+
+OR || = Calculate([revenue Measure],filter(location,location[state]="Florida"||location[state]="Albama")
+
+**********Not Equal-OR(<logical1>,<logical2>)
+
+ Not Equal <> = Calculate([revenue Measure],filter((product,product[Price]>2 &&product[Price]<>5.29||product[Price]>6.2))
+
+Differ Table filter = Calculate([revenue Measure],filter((product,product[Price]>2&&product[Price]<6),Filter(location,location[state]<>"Florida")
+
+********** Value -VALUE(<text>)
+Converts a text string that represents a number to a number.
+
+Value= VALUE("3") ---The following formula converts the typed string, "3", into the numeric value 3.
+ When a column name is given this function returns a single column table of distinct values or when a table name is given as input it returns a table with the same columns(entire table) with all the duplicates and blank rows
+
+Value -VALUES(<TableNameOrColumnName>)
+
+Value= COUNTROWS(VALUES('InternetSales_USD'[SalesOrderNumber]))
+
+
+
+**********RANK--RANK ( [<ties>][, <relation> or <axis>][, <orderBy>][, <blanks>][, <partitionBy>][, <matchBy>][, <reset>] )
+
+Returns the ranking for the current context within the specified partition, sorted by the specified order. If a match cannot be found then rank is blank.
+
+SalesRankWithinYear = RANK(DENSE, ORDERBY([SalesAmount], DESC), PARTITIONBY([CalendarYear]))
+
+SalesRankAllHistory = RANK(DENSE, ORDERBY([SalesAmount], DESC))
+
+Rank by Yearly = RankX All(Customers,[Avg year revenue])
+Average year Revenue = AverageX(Value(Date_Table[year])'key Measure'[Revenue Measure])
+
+**********TOPN--TOPN(<N_Value>, <Table>, <OrderBy_Expression>, [<Order>[, <OrderBy_Expression>, [<Order>]]…])
+
+Returns the top N rows of the specified table
+
+
+TOPN= SUMX(TOPN(10,SUMMARIZE(InternetSales,InternetSales[ProductKey],"TotalSales", SUM(InternetSales[SalesAmount]),[TotalSales], DESC),[TotalSales])
+
+
+**********Lookup Value -LOOKUPVALUE (<result_columnName>,<search_columnName>, <search_value> [, <search2_columnName>, <search2_value>]…[, <alternateResult>])
+
+Returns the value for the row that meets all criteria specified by one or more search conditions.
+
+We want to find Dept_name on the basis of Dept_id from two different table
+
+Dept_name=  Lookup value(Depts(Dept_name),Depts(Dept_id),Employee(Dept_id),"Default")
+
+
+**********Path--PATH(<ID_columnName>, <parent_columnName>)
+
+The following example creates a calculated column that lists all the managers for each employee.
+
+Path= PATH(Employee[EmployeeKey], Employee[ParentEmployeeKey])
+
+**********IF--IF(<logical_test>, <value_if_true>[, <value_if_false>])
+
+Checks a condition, and returns one value when it's TRUE, otherwise it returns a second value.
+Price Group =IF('Product'[List Price] < 500,"Low","High")
+
+Price Group =IF('Product'[List Price] < 500,"Low",IF('Product'[List Price] < 1500,"Medium","High")
+
+
+**********SWITCH--SWITCH(<expression>, <value>, <result>[, <value>, <result>]…[, <else>])
+
+Evaluates an expression against a list of values and returns one of multiple possible result expressions. 
+This function can be used to avoid having multiple nested IF statements.
+
+SWITCH= SWITCH ( [Month Number Of Year], 1, "January", 2, "February", 3, "March", 4, "April",5, "May", 6, "June",7, "July", 8, "August",9, "September",
+  10, "October",11, "November",12, "December","Unknown month number")
+
+
+**********RELATED =RELATED(<column>)
+
+Returns a related value from another table.
+
+RELATED=FILTER( 'InternetSales_USD', RELATED('SalesTerritory'[SalesTerritoryCountry])<>"United States")
+
+ **********DATE--DATE(<year>, <month>, <day>)
+
+Returns the specified date in datetime format.
+
+
+DATE= DATE(2009,7,8)
+
+The following formula returns the date July 8, 2009;
+
+DATE= DATE(2008,14,2)
+
+If month is greater than 12, month adds that number of months to the first month in the year specified. The following formula returns the date February 2, 2009;
+
+DATE= DATE(2008,1,35)
+
+
+if day is greater than the number of days in the month specified, day adds that number of days to the first day in the month. The following formula returns the date February 4, 2008;
