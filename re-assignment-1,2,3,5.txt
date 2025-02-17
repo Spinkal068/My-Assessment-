@@ -1,0 +1,484 @@
+                                    assignment---1--------------------------------------------------------------------------------
+
+
+--Q1-   Get the list of students with their admit term and current term using tables: PS_ACAD_PROG, PS_STDNT_CAR_TERM.
+select  * from ps_acad_prog; --a
+select  * from PS_STDNT_CAR_TERM; --b
+
+select a.emplid,a.admit_term , max(b.strm) as Current_term from PS_ACAD_PROG a , PS_STDNT_CAR_TERM  b
+where
+a.effdt = ( select max(A_ED.effdt) from PS_ACAD_PROG A_ED where A_ED.emplid=a.emplid and A_ED.institution=a.institution and
+A_ED.acad_career=a.acad_career)
+and  
+ a.effseq = ( select max(A_SQ.effseq) from PS_ACAD_PROG A_SQ where A_SQ.emplid=a.emplid and A_SQ.institution=a.institution and
+A_SQ.acad_career=a.acad_career and  A_SQ.effdt=a.effdt)
+and  a.emplid=b.emplid and a.acad_career=b.acad_career and a.institution = b.institution and a.prog_status='AC'
+group by  a.emplid,a.admit_term ;
+
+
+--Q2-Get the list of all plans of students under plan change category using tables: PS_ACAD_PROG ,PS_ACAD_PLAN.  .....
+select  * from ps_acad_prog; --a
+select  * from PS_ACAD_PLAN; --b
+
+select a.emplid, a.PROG_ACTION FROM  PS_ACAD_PROG a,PS_ACAD_PLAN b
+where a.effdt=(select max(A_ED.effdt) from PS_ACAD_PROG A_ED where A_ED.EMPLID=a.EMPLID and
+A_ED.acad_career=a.acad_career and A_ED.institution=a.institution) and
+ a.effseq = ( select max(A_SQ.effseq) from PS_ACAD_PROG A_SQ where A_SQ.emplid=a.emplid  and
+A_SQ.acad_career=a.acad_career  and A_SQ.institution=a.institution and  A_SQ.effdt=a.effdt) and
+
+b.effdt=(select max(B_ED.effdt) from PS_ACAD_PLAN B_ED where B_ED.EMPLID=b.EMPLID and
+B_ED.acad_career=b.acad_career ) and
+ b.effseq = ( select max(B_SQ.effseq) from PS_ACAD_PLAN B_SQ where B_SQ.emplid=b.emplid  and
+B_SQ.acad_career=b.acad_career  and  B_SQ.effdt=b.effdt) and
+ a.emplid=b.emplid and a.acad_career=b.acad_career  and a.prog_status='AC' and a.PROG_ACTION='PLNC';
+
+
+
+
+--Q3- Get concatenation address :- Address1, Address2, Address3 ,Address4,city, PostalCode , Country using table: PS_ADDRESSES .......
+select *from PS_ADDRESSES;
+
+select a.emplid,(a.address1||' '||a.address2||' '|| a.address3||' '|| a.address4||' '|| a.city||''||a.postal||''||a.country) AS address
+from PS_ADDRESSES a
+where a.effdt=(select max(A_ED.effdt) from PS_ADDRESSES A_ED where A_ED.EMPLID=a.EMPLID ) ;
+
+
+
+
+--Q4- Get emplid, acad_prog, acad_plan, req_term of student order by emplid using tables:PS_ACAD_PLAN, PS_ACAD_PROG. .....
+select *from PS_ACAD_PLAN;--
+select *from  PS_ACAD_PROG;--
+
+select a.emplid,b.acad_prog,a.acad_plan,a.req_term from PS_ACAD_PLAN a,PS_ACAD_PROG b
+where a.effdt=(select max(A_ED.effdt) from PS_ACAD_PLAN A_ED where A_ED.EMPLID=a.EMPLID   and
+A_ED.acad_career=a.acad_career) and
+ a.effseq =( select max(A_EQ.effseq) from PS_ACAD_PLAN A_EQ where A_EQ.emplid=a.emplid  and
+A_EQ.acad_career=a.acad_career and  A_EQ.effdt=a.effdt) and
+b.effdt=(select max(b_ed.effdt) from PS_ACAD_PROG b_ed where b_ed.acad_career=b.acad_career and B_ED.emplid=b.emplid and B_ED.institution=b.institution)and
+b.effseq=(select max(B_SQ.effseq) from PS_ACAD_PROG B_SQ where B_SQ.acad_career=b.acad_career and B_SQ.emplid=b.emplid and B_SQ.effdt=b.effdt and B_SQ.institution=b.institution)
+and
+a.emplid=b.emplid and a.acad_career=b.acad_career and b.prog_status='AC'
+order by a.emplid;
+
+
+
+
+
+
+--Q5-  name of students which start with vowels and end with vowels and order them by name_display from tables: PS_PERSONAL_DATA .....
+select *from PS_PERSONAL_DATA;
+
+
+select  a.emplid, a.name_display 
+from PS_PERSONAL_DATA a
+where 
+(( a.name_display LIKE  'a%' or a.name_display LIKE'e%' or a.name_display LIKE'i%' or a.name_display LIKE 'o%' or a.name_display LIKE 'u%')
+or(a.name_display LIKE '%a' or a.name_display LIKE '%e'or a.name_display LIKE '%i' or a.name_display LIKE '%o' or a.name_display LIKE'%u'))
+and
+((a.name_display LIKE  'A%' or a.name_display LIKE'E%' or a.name_display LIKE'I%' or a.name_display LIKE 'O%' or a.name_display LIKE 'U%')or
+(a.name_display LIKE '%A' or a.name_display LIKE '%E' or a.name_display LIKE '%I' or a.name_display LIKE '%O' or a.name_display LIKE'%U'))
+order by name_display;
+
+--- ((Name start with Capital Vowel letter and end with small vowel letter are not coming )
+
+
+--Q-6 Get the emplid , name and sum of total amount paid by student from tables: PS_ITEM_SF ,PS_PERSONAL_DATA.
+select *from PS_ITEM_SF; --b
+select *from PS_PERSONAL_DATA;--a
+
+select a.emplid,a.name_display,abs(sum(b.ITEM_AMT))as paid_amount
+from PS_PERSONAL_DATA a,PS_ITEM_SF b
+where a.emplid=b.emplid and b.item_type_cd='P'
+--and b.emplid='00000000698'
+group by  a.emplid,a.name_display;
+
+
+
+
+--Q7 Find all active lecture type courses with descr, acad_org, acad group with descr using tables:PS_CRSE_CATALOG,PS_CRSE_OFFER,,PS_ACAD_GROUP_TBL,PS_ACAD_ORG_TBL,    
+select *from PS_CRSE_CATALOG;--a
+select *from PS_CRSE_OFFER;--b
+select *from PS_ACAD_ORG_TBL;--c
+select *from PS_ACAD_GROUP_TBL;--d
+
+
+select a.CRSE_ID,a.SSR_COMPONENT,a.DESCR ,d.ACAD_GROUP,d.descr as desce2,b.ACAD_ORG,c.DESCR as descr1
+from PS_CRSE_CATALOG a,PS_CRSE_OFFER b,PS_ACAD_ORG_TBL c,PS_ACAD_GROUP_TBL d
+where
+a.SSR_COMPONENT='LEC' and a.EFF_STATUS='A'
+and a.CRSE_ID=b.CRSE_ID and b.ACAD_ORG=c.ACAD_ORG and d.acad_group=b.acad_group and b.institution=c.institution and 
+a.effdt=(select max(A_ED.effdt) from PS_CRSE_CATALOG A_ED where A_ED.crse_id=a.crse_id) and
+b.effdt=(select max(B_ED.effdt) from PS_CRSE_OFFER B_ED where B_ED.crse_id=b.crse_id and  B_ED.INSTITUTION=b.INSTITUTION and B_ED.catalog_nbr=b.catalog_nbr)and
+c.effdt=(select max(C_ED.effdt) from PS_ACAD_ORG_TBL C_ED where C_ED.acad_org=c.acad_org and  C_ED.INSTITUTION=c.INSTITUTION )and
+d.effdt=(select max(D_ED.effdt) from PS_ACAD_GROUP_TBL D_ED where   D_ED.INSTITUTION=d.INSTITUTION and D_ED.ACAD_GROUP=d.ACAD_GROUP );
+
+--(( in crse_offer subquery only crse_id catalog_nbr and institution joing should be present  ))
+
+
+
+--Q-8 Get the percentage marks of each student from tables: PS_STDNT_GRADE_DTL,PS_LAM_CLASS_ACTV     ----
+
+SELECT * FROM PS_STDNT_GRADE_DTL; --a
+SELECT * FROM PS_LAM_CLASS_ACTV; --b
+
+select  a.emplid,a.strm,a.class_nbr,round(((sum(a.STUDENT_GRADE)/sum(b.mark_out_of))*100),2) as percentage
+from PS_STDNT_GRADE_DTL a,PS_LAM_CLASS_ACTV b
+where a.strm=b.strm and a.class_nbr=b.class_nbr and a.sequence_no=b.sequence_no
+group by a.emplid,a.strm,a.class_nbr;
+
+-- ((percentage should be come up to 2 decimal value ))
+
+
+--Q-9  Get the emplid , name of students, total no of students who have paid hostel fees from tables:PS_PERSONAL_DATA, PS_ITEM_SF
+
+select *from PS_PERSONAL_DATA;  --a
+select *from  PS_ITEM_SF;  ---b
+
+select  a.emplid ,a.name_display,abs(sum(b.item_amt))as payment
+from PS_PERSONAL_DATA a,PS_ITEM_SF b
+where  a.emplid=b.emplid and b.item_type_cd='P' and b.ACCOUNT_TYPE_SF='HOS'
+--and a.emplid='00000000698'
+group by  a.emplid ,a.name_display;
+
+--- ((condition missing ))
+
+                                            assignment-2----------------------------------------------
+
+
+/* Q-1
+Create a query to display the room, description, facility type, room capacity and order it by facility type.
+Now create one field which gives the description whether the room is on ground floor, first floor etc.
+If room consists of '0' at 1st place then it is on Ground Floor.
+If room consists of '1' at 1st place then it is on First Floor.
+If room consists of '2' at 1st place then it is on Second Floor.
+If room consists of '3' at 1st place then it is on Third floor.
+If room consists of '4' at 1st place then it is on Fourth Floor.
+If room consists of '5' at 1st place then it is on Fifth Floor.
+And select the data of only those rooms which have room length as three. Use Table: FACILITY_TBL   */
+
+select *from ps_FACILITY_TBL;
+
+select room,descr,facility_type,room_capacity,
+case when room like '0%' or room like '___0%' or room like 'G%'  then 'it is on Ground Floor'
+when room  like '1%'or room like '___1%' then 'it is on First Floor'
+when room like '2%'or room like '___2%' then 'it is on second Floor'
+when room like '3%'or room like '___3%' then 'it is on third Floor'
+when room like '4%'or room like '___4%' then 'it is on fourth Floor'
+when room like '5%' or room like '___5%' then 'it is on Fifth Floor'
+else 'not found'
+end as floor_description
+from ps_FACILITY_TBL
+where 
+room_capacity>3
+;
+
+
+
+
+/* Q-2
+Create a query to select First_name_srch ,last_name_srch,Father's
+name,acad_prog,acad_plan,admit_term,admit_type,academic_level,email_addr,phone,address,
+gender,reg_region,religion_cd,prog_action fields.
+The Address field will be single filed that will comprise of address1, adress2,address3,address4,city
+fields and replace the ','(Comma) with a space in address field.
+
+The tables from which you will have to select these data are:
+ADM_PRSPCT_CAR,
+ADM_PRSPCT_PROG,
+ADM_PRSPCT_Plan,ACAD_PROG
+PERSONAL_DATA,
+,RELATIONSHIPS,SRMU_REGN_CASTE,ADDRESSES,EMAIL_ADDRESSES,
+Also include 2 conditions as people_relation='FA' and prog_action='MATR' 
+
+Note: All data should come
+that is present in table ADM_PRSPCT_CAR even if there is no data in other tables.   */
+
+select *from ps_PERSONAL_DATA;--d
+select *from ps_RELATIONSHIPS;--e
+select *from ps_ADM_PRSPCT_Plan;--c
+select *from ps_ACAD_PROG;--h
+select *from ps_ADDRESSES;--f
+select *from ps_ADM_PRSPCT_CAR;--a
+select *from ps_SRMU_REGN_CASTE;--i
+select *from ps_EMAIL_ADDRESSES;--g
+select *from ps_ADM_PRSPCT_PROG;--b
+
+select 
+  a.emplid,a.ADMIT_TERM,a.ADMIT_TYPE,a.RECRUITING_STATUS ,a.ACADEMIC_LEVEL,
+b.ACAD_PROG,c.acad_plan ,d.First_name_srch ,d.last_name_srch,replace(f.address1||' '||f.address2||' '||f.address3||' '||f.address4||' '||f.city ,',' ,' ') as address,d.phone
+,e.name,e.sex,g.email_addr,i.reg_region,i.religion_cd
+from
+ps_ADM_PRSPCT_CAR a 
+left join ps_ADM_PRSPCT_PROG b on a.EMPLID=b.EMPLID and a.ACAD_CAREER=b.ACAD_CAREER and a.INSTITUTION=b.INSTITUTION 
+left join ps_ADM_PRSPCT_Plan c on c.emplid=a.emplid and a.institution=c.institution and a.acad_career=c.acad_career
+left join ps_PERSONAL_DATA d on a.emplid=d.emplid 
+left join ps_RELATIONSHIPS e on a.emplid=e.emplid and e.PEOPLE_RELATION='FA'
+left join ps_ADDRESSES f on  a.emplid=f.emplid  and f.EFF_STATUS='A' and f.ADDRESS_TYPE='PERM'
+left join ps_EMAIL_ADDRESSES g on a.emplid=g.emplid and g.E_ADDR_TYPE='HOME'
+left join ps_ACAD_PROG h on a.emplid=h.emplid and h.PROG_ACTION='MATR' and a.acad_career=h.acad_career and a.institution=h.institution 
+left join ps_SRMU_REGN_CASTE i on a.emplid=i.emplid 
+where 
+e.effdt=(select max(E_ED.effdt) from ps_RELATIONSHIPS E_ED where E_ED.emplid=e.emplid ) and 
+h.effdt=(select max(H_ED.effdt) from ps_ACAD_PROG H_ED where H_ED.emplid=h.emplid and H_ED.acad_career=h.acad_career and H_ED.institution=h.institution ) and 
+h.effseq=(select max(H_SQ.effseq) from ps_ACAD_PROG H_SQ where H_SQ.emplid=h.emplid and H_SQ.acad_career=h.acad_career and H_SQ.institution=h.institution and
+ H_SQ.effdt=h.effdt )and
+f.effdt=(select max(F_ED.effdt) from ps_ADDRESSES F_ED where F_ED.emplid=f.emplid ) ;
+--AND A.EMPLID='00000002135';
+
+--- ((joining missing insti, career  and no need of joinig of acad_prog in subquery ))
+
+
+
+                                         assignment--3--------------------------------------------------------------------------------
+
+--Q-1
+--Find all active lecture type courses with descr, acad_org, acad group with descr   --------
+--using tables:CRSE_CATALOG,CRSE_OFFER,ACAD_ORG_TBL,ACAD_GROUP_TBL
+
+select *from ps_ACAD_ORG_TBL; ---a
+select *from ps_ACAD_GROUP_TBL; ---b
+select *from ps_CRSE_OFFER; --c
+select *from ps_CRSE_CATALOG; --d
+
+select
+c.CRSE_ID,a.acad_org,a.descr,b.acad_group,b.descr,d.SSR_COMPONENT
+from
+ps_ACAD_ORG_TBL a,ps_CRSE_OFFER c,ps_ACAD_GROUP_TBL b,ps_CRSE_CATALOG d
+where
+a.effdt=(select max(A_ED.effdt) from  ps_ACAD_ORG_TBL A_ED  where a.acad_org=A_ED.acad_org and A_ED.INSTITUTION=a.INSTITUTION) and
+b.effdt=(select max(B_ED.effdt) from  ps_ACAD_GROUP_TBL B_ED  where b.acad_group=B_ED.acad_group and B_ED.INSTITUTION=b.INSTITUTION)and
+c.effdt=(select max(C_ED.effdt) from  ps_CRSE_OFFER C_ED where  c.INSTITUTION=C_ED.INSTITUTION and c.CRSE_ID=C_ED.CRSE_ID and c.CATALOG_NBR=C_ED.CATALOG_NBR) and
+d.effdt=(select max(D_ED.effdt) from  ps_CRSE_CATALOG D_ED  where d.crse_id=D_ED.crse_id ) and
+ a.acad_org=c.acad_org and a.EFF_STATUS='A' and b.EFF_STATUS='A'and  d.EFF_STATUS='A'and b.acad_group=c.acad_group and d.SSR_COMPONENT='LEC' and c.CRSE_ID=d.CRSE_ID and c.institution=a.institution and
+ c.institution=b.institution
+;
+
+--Q-2
+--Find all active student’s class_nbr, strm, emplid, name, catalog_nbr, subject, acad_career,academic   ---------
+--group, academic program which are lecture type and class capacity not more than 30
+--using tables:ACAD_PROG,CLASS_TBL,STDNT_ENRL,PERSONAL_DATA
+select *from ps_CLASS_TBL; --c
+select *from ps_PERSONAL_DATA;--d
+select *from ps_STDNT_ENRL;--b
+select *from ps_ACAD_PROG; --a
+
+select
+a.emplid,d.name_display,a.ACAD_CAREER,b.class_nbr,b.strm,c.CATALOG_NBR,c.subject,c.ACAD_GROUP,c.SSR_COMPONENT,c.ENRL_CAP
+from
+ps_ACAD_PROG a,ps_STDNT_ENRL b,ps_CLASS_TBL c,ps_PERSONAL_DATA d
+where
+a.effdt=(select max(A_ED.effdt)from ps_ACAD_PROG A_ED where a.EMPLID=A_ED.EMPLID and a.INSTITUTION=A_ED.INSTITUTION and a.ACAD_CAREER=A_ED.ACAD_CAREER)and
+a.effseq=(select max(A_SQ.effseq)from ps_ACAD_PROG A_SQ where a.EMPLID=A_SQ.EMPLID and a.INSTITUTION=A_SQ.INSTITUTION and 
+a.ACAD_CAREER=A_SQ.ACAD_CAREER and a.effdt=A_SQ.effdt)and
+a.emplid=b.emplid and a.ACAD_CAREER=b.ACAD_CAREER and b.strm=c.strm and a.ACAD_CAREER=c.ACAD_CAREER and b.ACAD_CAREER=c.ACAD_CAREER and b.CLASS_NBR=c.CLASS_NBR
+ and c.SSR_COMPONENT='LEC' and not c.enrl_cap>30 and a.emplid=d.emplid and b.emplid=d.emplid and b.institution=c.institution and a.institution=c.institution and a.PROG_STATUS='AC'
+ and b.STDNT_ENRL_STATUS='E';
+
+-- ((no need of acad_prog joining in subquery ))
+
+
+--Q-3
+--Find all active students of department “Dept of Mech Engineering” of all courses with their class which
+--component is lab using tables:ACAD_ORG_TBL,CRSE_CATALOG,CRSE_OFFER,STDNT_ENRL,CLASS_TBL
+select *from ps_ACAD_ORG_TBL; --
+select *from ps_CRSE_CATALOG; --
+select *from ps_CRSE_OFFER;--main
+select *from ps_STDNT_ENRL;--
+select *from ps_CLASS_TBL;--
+
+select a.crse_id,a.acad_group,a.CATALOG_NBR,c.descr,d.SSR_COMPONENT,d.CLASS_NBR,e.emplid
+from ps_CRSE_OFFER a,ps_CRSE_CATALOG b,ps_ACAD_ORG_TBL c,ps_CLASS_TBL d,ps_STDNT_ENRL e
+where a.crse_id=b.crse_id and b.eff_status='A'  and a.acad_org=c.acad_org and c.descr='Dept of Mech Engineering' and d.SSR_COMPONENT='LAB' and
+a.CATALOG_NBR=d.CATALOG_NBR  and
+a.crse_id=d.crse_id and a.ACAD_GROUP=d.ACAD_GROUP and a.INSTITUTION=d.INSTITUTION and a.acad_org=d.acad_org and a.ACAD_CAREER=d.ACAD_CAREER and a.ACAD_CAREER=e.ACAD_CAREER and
+a.institution=e.institution and a.INSTITUTION=c.INSTITUTION and  d.class_nbr=e.class_nbr and  d.strm=e.strm
+ and a.effdt=(select max(A_ED.effdt)from ps_CRSE_OFFER A_ED where A_ED.institution=a.institution and A_ED.CRSE_ID=a.CRSE_ID and
+a.ACAD_CAREER=A_ED.ACAD_CAREER and a.CATALOG_NBR=A_ED.CATALOG_NBR)and
+  b.effdt=(select max(B_ED.effdt)from ps_CRSE_CATALOG B_ED where B_ED.CRSE_ID=b.CRSE_ID )and
+ c.effdt=(select max(C_ED.effdt)from ps_ACAD_ORG_TBL C_ED where C_ED.institution=c.institution and C_ED.acad_org=c.acad_org)
+;
+
+
+--Q-4
+--Find all undergraduate student who entered in system with prospect and the become applicant in the
+--system in 1601 when and who created prospect using tables:ADM_PRSPCT_CAR,ADM_APPL_DATA,PERSONAL_DATA    ----------
+select *from PS_ADM_PRSPCT_CAR;
+select *from PS_ADM_APPL_DATA;
+select *from PS_PERSONAL_DATA;
+
+select a.emplid,a.acad_career,a.ADMIT_TERM,b.ADM_CREATION_DT,b.ADM_CREATION_BY,c.name_display
+from PS_ADM_PRSPCT_CAR a,PS_ADM_APPL_DATA b,PS_PERSONAL_DATA c
+where a.acad_career='UG' and a.admit_term='1601' and a.institution=b.institution
+and a.emplid=b.emplid and a.ACAD_CAREER=b.ACAD_CAREER and a.emplid=c.emplid   and a.RECRUITING_STATUS='PROS';
+
+
+
+--Q-5
+--Find all students id , name, address, email_address, contact no and faculty of that class
+--and calculate attendance percentage for each student in respective classes in 1701 strm using tables:
+--CLASS_ATTENDNCE,CLASS_TBL,PERSONAL_DATA,CLASS_INSTR,EMAIL_ADDRESSES
+
+select *from PS_CLASS_ATTENDNCE;
+select *from PS_CLASS_TBL;--a
+select *from PS_PERSONAL_DATA;
+select *from PS_CLASS_INSTR;
+select *from PS_EMAIL_ADDRESSES;
+
+
+
+
+select
+a.EMPLID, a.STRM, a.CLASS_NBR, b.SUBJECT ,c.EMPLID, c.INSTR_ROLE ,(select name_display from ps_personal_data where emplid=c.emplid)as Teacher_name,
+round((select count(z.ATTEND_PRESENT) from PS_CLASS_ATTENDNCE z where z.ATTEND_PRESENT='Y' and z.strm=a.strm and
+z.ACAD_CAREER=a.ACAD_CAREER and z.emplid=a.emplid and z.CLASS_NBR=a.class_nbr)/
+(select count(z.ATTEND_PRESENT) from PS_CLASS_ATTENDNCE z where z.strm=a.strm  and
+z.ACAD_CAREER=a.ACAD_CAREER and z.emplid=a.emplid and z.CLASS_NBR=a.CLASS_NBR )*100,2) as percentage ,
+(d.address1||' '||d.address2||' '||d.address3||' '||d.address4||' '||d.city) as address ,d.name_display,d.phone,e.email_addr
+from 
+PS_CLASS_ATTENDNCE a,
+PS_CLASS_TBL b ,
+PS_CLASS_INSTR c,
+PS_PERSONAL_DATA d
+,PS_EMAIL_ADDRESSES e
+where
+a.STRM='1701' and a.emplid='00000007641'  and a.class_nbr='1326' and 
+a.ACAD_CAREER=b.ACAD_CAREER and a.strm=b.strm and a.class_nbr=b.class_nbr
+and a.strm=c.strm and b.CRSE_ID=c.CRSE_ID and  b.CLASS_SECTION=c.CLASS_SECTION and b.strm=c.strm and a.emplid=d.emplid and a.emplid=e.emplid and a.institution=b.institution 
+group by a.EMPLID, a.STRM,a.acad_career, a.CLASS_NBR,b.CRSE_ID, b.CLASS_SECTION, b.SUBJECT ,c.EMPLID, c.INSTR_ROLE,(d.address1||' '||d.address2||' '||d.address3||' '||d.address4||' '||d.city)  ,d.name_display,d.phone,e.email_addr
+ 
+;
+
+
+
+--Q-6
+--Find all active instructors in the system who have taken more than 4 class in a strm with instructor
+--name, id, class number, type, descr,capacity, their department
+--CLASS_TBL
+--CLASS_INSTR
+--PERSONAL_DATA
+--INSTR_ADVISOR
+
+select *from PS_CLASS_TBL;--a
+select *from PS_PERSONAL_DATA;--d
+select *from PS_CLASS_INSTR;--c
+select *from PS_INSTR_ADVISOR;--b
+
+select
+a.crse_id,d.name_display ,a.class_nbr,a.strm,a.subject as department,b.INSTR_AVAILABLE,a.descr,b.INSTR_TYPE,a.ENRL_CAP,a.strm,b.emplid
+from
+PS_CLASS_TBL a,PS_INSTR_ADVISOR b,PS_CLASS_INSTR c
+,PS_PERSONAL_DATA d
+where
+b.effdt=(select max(B_ED.effdt) from PS_INSTR_ADVISOR B_ED where B_ED.emplid=b.emplid and B_ED.institution=b.institution)
+and a.ACAD_ORG=b.ACAD_ORG  and a.crse_id=c.crse_id and a.institution=b.institution and a.CRSE_OFFER_NBR=c.CRSE_OFFER_NBR and
+a.CLASS_SECTION=c.CLASS_SECTION and a.strm=c.strm and b.emplid=c.emplid and b.EFF_STATUS='A' and b.emplid=d.emplid and c.emplid=d.emplid
+group by a.crse_id ,a.class_nbr,a.strm,a.subject,b.INSTR_AVAILABLE,a.descr,b.INSTR_TYPE,d.name_display,a.ENRL_CAP,a.strm,b.emplid
+having count(a.class_nbr)>4
+;
+
+
+
+                                 assignment---5-----------------------------------------------------------------------------------------
+
+--Q-1
+--Find emplid,campus_id,name_display,acad_prog,acad_career,acad_plan,admit_term,item_term of all
+--student who have hostel charge ,hostel payment and hostel refund using table:
+--PERSONAL_DATA
+--ITEM_SF
+--ACAD_PROG
+--ACAD_PLAN
+--STDNT_CAR_TERM
+--ACCOUNT_SF
+select *from PS_PERSONAL_DATA;
+select *from PS_ITEM_SF;
+select *from PS_ACAD_PROG;
+select *from PS_ACAD_PLAN;
+select *from PS_STDNT_CAR_TERM;
+select *from PS_ACCOUNT_SF;
+
+
+select 
+c.emplid,c.ACCOUNT_TYPE_SF,a.ADMIT_TERM,a.ACAD_PROG,b.ACAD_PLAN,d.name_display,d.campus_id,e.acad_career
+,(select sum(ITEM_AMT) from PS_ITEM_SF where ITEM_TYPE_CD='C'  and ACCOUNT_TYPE_SF='HOS' and emplid=c.emplid )as hostel_charge,
+(select sum(ITEM_AMT) from PS_ITEM_SF  where ITEM_TYPE_CD='P' and ACCOUNT_TYPE_SF='HOS' and emplid=c.emplid  ) as hostel_payment,
+(select sum(ITEM_AMT) from PS_ITEM_SF  where ITEM_TYPE_CD='R' and ACCOUNT_TYPE_SF='HOS' and emplid=c.emplid  ) as hostel_refund
+from
+PS_ITEM_SF c,PS_ACAD_PROG a,PS_ACAD_PLAN b,PS_PERSONAL_DATA d,PS_STDNT_CAR_TERM e,PS_ACCOUNT_SF f
+where
+c.ACCOUNT_TYPE_SF='HOS'  and a.emplid=c.emplid and  b.emplid=c.emplid  and d.emplid=c.emplid and  e.emplid=c.emplid and 
+ a.institution=e.institution and c.emplid=f.emplid   and
+  a.acad_career=b.acad_career and b.acad_career=e.acad_career and
+a.effdt=(select max(A_ED.effdt) from ps_acad_prog A_ED where a.emplid=A_ED.emplid and a.acad_career=A_ED.acad_career and a.institution=A_ED.institution ) and
+a.effseq=(select max(A_SQ.effseq) from ps_acad_prog A_SQ where a.emplid=A_SQ.emplid and a.acad_career=A_SQ.acad_career and a.institution=A_SQ.institution 
+and a.effdt=A_SQ.effdt) and
+b.effdt=(select max(B_ED.effdt) from PS_ACAD_PLAN B_ED where b.emplid=B_ED.emplid and  b.acad_career=B_ED.acad_career  ) and
+b.effseq=(select max(B_SQ.effseq) from PS_ACAD_PLAN B_SQ where b.emplid=B_SQ.emplid and b.acad_career=B_SQ.acad_career   and b.effdt=B_SQ.effdt)
+group by a.ACAD_PROG, c.emplid,c.ACCOUNT_TYPE_SF,a.ADMIT_TERM,b.ACAD_PLAN,d.name_display,d.campus_id,e.acad_career
+;
+
+---((wrong condition and no need of joining of acad_prog in subquery ))
+
+
+--Q-2
+--Find emplid,name_display,address,phone,admit_term,acad_prog,admit_type and then calculate the
+--passing year for them (Only for B-TECH students), Consider lateral entries also using tables:
+--PERSONAL_DATA
+--ADDRESSES
+--ADM_APPL_DATA
+--ACAD_PROG
+--ACAD_PLAN
+--E.g.:-If admit_term is =1201
+--Then passing term would be=2016
+select *from ps_PERSONAL_DATA;
+select *from ps_ADDRESSES;
+select *from ps_ADM_APPL_DATA;
+select *from ps_ACAD_PROG;
+select *from ps_ACAD_PLAN;
+
+
+select  a.emplid,a.acad_career,a.admit_type,b.ACAD_PROG,b.admit_term,
+ case 
+when a.ADMIT_TYPE='FYR'   then  (20||''||SUBSTR((b.admit_term),1,2))+4
+when a.ADMIT_TYPE='LAT'  then  (20||''||SUBSTR((b.admit_term),1,2))+3
+else (20||''||SUBSTR((b.admit_term),1,2))+4
+end as passing_year
+,( e.ADDRESS1||' '||e.ADDRESS2||' '||e.ADDRESS3||' '||e.ADDRESS4||' '||e.CITY)as address
+from  ps_ADM_APPL_DATA a
+left join ps_ACAD_PROG b on  a.emplid=b.emplid and a.acad_career=b.acad_career and a.institution=b.institution and b.acad_prog like '%BTR__'
+left join ps_ACAD_PLAN c on a.emplid=c.emplid  and a.acad_career=c.acad_career
+left join ps_PERSONAL_DATA d on a.emplid=d.emplid
+left join ps_ADDRESSES e on a.emplid=e.emplid  and e.ADDRESS_TYPE='PERM'  and e.EFF_STATUS='A' 
+
+where   
+b.effdt=(select max(B_ED.effdt)from ps_ACAD_PROG B_ED where b.emplid=B_ED.emplid and b.institution=B_ED.institution and B_ED.acad_career=b.acad_career)and
+b.effseq=(select max(B_SQ.effseq)from ps_ACAD_PROG B_SQ where b.emplid=B_SQ.emplid and b.institution=B_SQ.institution and B_SQ.acad_career=b.acad_career and B_SQ.effdt=b.effdt)and
+c.effdt=(select max(C_ED.effdt)from ps_ACAD_PLAN C_ED where c.emplid=C_ED.emplid  and C_ED.acad_career=c.acad_career)and
+c.effseq=(select max(C_SQ.effseq)from ps_ACAD_PLAN C_SQ where c.emplid=C_SQ.emplid  and C_SQ.acad_career=c.acad_career and C_SQ.effdt=c.effdt)and
+e.effdt=(select max(E_ED.effdt)from ps_ADDRESSES E_ED where e.emplid=E_ED.emplid )
+; 
+-- ((reframe this answer ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

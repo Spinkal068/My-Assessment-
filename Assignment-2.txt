@@ -1,0 +1,70 @@
+Q-1 Create a query to display the room, description, facility type, room capacity and order it by facility type.
+    Now create one field which gives the description whether the room is on ground floor, first floor etc.
+    If room consists of '0' at 1st place then it is on Ground Floor.
+    If room consists of '1' at 1st place then it is on First Floor.
+    If room consists of '2' at 1st place then it is on Second Floor.
+    If room consists of '3' at 1st place then it is on Third floor.
+    If room consists of '4' at 1st place then it is on Fourth Floor.
+    If room consists of '5' at 1st place then it is on Fifth Floor.
+    And select the data of only those rooms which have room length as three. Use Table: FACILITY_TBL
+
+Ans -: select a.ROOM, a.DESCRIPTION , a.FACILITY_TYPE , a.ROOM_CAPACITY ,
+     CASE   
+        When ROOM like '0%' Then  'Ground Floor' 
+        When ROOM like '1%' Then  'First Floor'
+        When ROOM like '2%' Then  'Second Floor'
+        When ROOM like '3%' Then  'Third Floor'
+        When ROOM like '4%' Then  'Fourth Floor'
+        When ROOM like '5%' Then  'Fifth Floor'
+        else 'Unkown Floor'
+      END as Floor_description
+      from  ps_FACILITY_TBL a where LENGTH(ROOM)=3 and 
+      a.EFFDT= (select max(A_FT.EFFDT) from ps_FACILITY_TBL A_FT where A_FT.FACILITY_ID=a.FACILITY_ID)
+      and a.EFF_STATUS='A'
+      order by FACILITY_TYPE ;
+
+Q-2 Create a query to select First_name_srch ,last_name_srch,Father's
+    name,acad_prog,acad_plan,admit_term,admit_type,academic_level,email_addr,phone,address,
+    gender,reg_region,religion_cd,prog_action fields.
+    The Address field will be single filed that will comprise of address1, adress2,address3,address4,city
+    fields and replace the ','(Comma) with a space in address field.
+    The tables from which you will have to select these data are:
+    ADM_PRSPCT_CAR
+    PERSONAL_DATA
+    ADM_PRSPCT_PROG
+    ADM_PRSPCT_Plan
+    RELATIONSHIPS
+    SRMU_REGN_CASTE
+    ADDRESSES
+    EMAIL_ADDRESSES
+    ACAD_PROG
+    Also include 2 conditions as people_relation='FA' and prog_action='MATR' Note: All data should come
+    that is present in table ADM_PRSPCT_CAR even if there is no data in other tables. 
+
+Ans - : 
+      Select A.EMPLID  , B.FIRST_NAME_SRCH , B.LAST_NAME_SRCH , E.NAME as FATHER_NAME , C.ACAD_PROG  , D.ACAD_PLAN , I.ADMIT_TERM , A.ADMIT_TYPE, A.ACADEMIC_LEVEL ,
+      H.EMAIL_ADDR ,
+      (G.ADDRESS1 | | G.ADDRESS2 | | G.ADDRESS3 | | G.ADDRESS4 | | G.CITY) , B.SEX as GENDER , F.REG_REGION, F.RELIGION_CD  , I.PROG_ACTION 
+      from ps_ADM_PRSPCT_CAR A LEFT JOIN ps_personal_data B on A.EMPLID=B.EMPLID  LEFT JOIN ps_ADM_PRSPCT_PROG C on
+      (A.EMPLID=C.EMPLID AND  A.INSTITUTION=C.INSTITUTION AND A.ACAD_CAREER=C.ACAD_CAREER) 
+      LEFT JOIN  ps_ADM_PRSPCT_Plan D on ( A.EMPLID=D.EMPLID AND A.INSTITUTION=D.INSTITUTION AND A.ACAD_CAREER=D.ACAD_CAREER ) 
+      LEFT JOIN (Select * from ps_relationships E  where E.EFFDT=(Select MAX(E_R.EFFDT) from ps_relationships E_R Where E.EMPLID=E_R.EMPLID)
+      AND E.PEOPLE_RELATION='FA' 
+      AND E.EFF_STATUS='A') E on (E.EMPLID=A.EMPLID)   LEFT JOIN  ps_SRMU_REGN_CASTE F on (F.EMPLID=A.EMPLID)  LEFT JOIN 
+      (Select * From  ps_addresses G where G.EFFDT = 
+      (Select MAX(G_AD.EFFDT) from ps_addresses G_AD where G_AD.EMPLID=G.EMPLID AND G.EFF_STATUS='A' ))
+      G on (G.EMPLID=A.EMPLID) LEFT JOIN 
+      ps_email_addressES H on (H.EMPLID=A.EMPLID AND H.PREF_EMAIL_FLAG='Y') LEFT JOIN (Select * From ps_acad_prog I Where 
+      I.EFFDT= (Select MAX(I_AP.EFFDT) From ps_acad_prog I_AP 
+      Where I_AP.EMPLID=I.EMPLID AND I.ACAD_CAREER=I_AP.ACAD_CAREER AND I_AP.INSTITUTION=I.INSTITUTION AND I.ADMIT_TERM=I_AP.ADMIT_TERM
+      AND I.PROG_STATUS='AC' AND
+      I.EFFSEQ  =(Select MAX(I_SQ.EFFSEQ) From ps_acad_prog I_SQ Where I_SQ.EMPLID=I.EMPLID AND I.ACAD_CAREER=I_SQ.ACAD_CAREER
+      AND I_SQ.INSTITUTION=I.INSTITUTION AND 
+      I.ADMIT_TERM=I_SQ.ADMIT_TERM AND I.PROG_ACTION='MATR' ) ))
+      I on (I.EMPLID=A.EMPLID AND A.ACAD_CAREER=I.ACAD_CAREER AND A.INSTITUTION=I.INSTITUTION  AND A.ADMIT_TERM=I.ADMIT_TERM );
+
+
+
+
+
+
