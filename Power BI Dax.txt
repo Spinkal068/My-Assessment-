@@ -1,0 +1,445 @@
+1. Aggregation Functions
+SUM(): Adds all the numbers in a column.
+AVERAGE(): Calculates the arithmetic mean of a column.
+COUNT(): Counts the number of rows in a column.
+COUNTROWS(): Counts the number of rows in a table.
+MAX(): Returns the largest value in a column.
+MIN(): Returns the smallest value in a column.
+DISTINCTCOUNT(): Counts the number of distinct values in a column.
+2. Logical Functions
+IF(): Returns one value if a condition is true and another if false.
+AND(): Checks if all conditions are true.
+OR(): Checks if any condition is true.
+NOT(): Reverses the value of a logical argument.
+3. Date & Time Functions
+TODAY(): Returns the current date.
+NOW(): Returns the current date and time.
+DATE(): Creates a date from year, month, and day.
+YEAR(), MONTH(), DAY(): Extracts the respective component from a date.
+DATEDIFF(): Calculates the difference between two dates.
+EOMONTH(): Returns the end of the month for a specified date.
+WEEKDAY(): Returns the day of the week for a date.
+FORMAT(): Formats a value as a string (useful for dates).
+4. Text Functions
+CONCATENATE() or CONCAT(): Combines two strings into one.
+LEFT(): Extracts a specified number of characters from the start of a string.
+RIGHT(): Extracts a specified number of characters from the end of a string.
+MID(): Returns a substring from the middle of a string.
+SEARCH(): Finds the position of a substring within a string.
+LEN(): Returns the number of characters in a string.
+TRIM(): Removes all spaces from a text string except for single spaces between words.
+5. Filter Functions
+FILTER(): Returns a table that represents a subset of another table.
+ALL(): Ignores all filters applied to a column or table.
+CALCULATE(): Evaluates an expression in a modified filter context.
+KEEPFILTERS(): Applies additional filters while keeping existing ones.
+REMOVEFILTERS(): Removes filters applied to columns or tables.
+6. Time Intelligence Functions
+DATESYTD(): Returns a table containing the year-to-date dates.
+DATESMTD(): Returns a table containing the month-to-date dates.
+DATESQTD(): Returns a table containing the quarter-to-date dates.
+PREVIOUSMONTH(): Returns a table of dates from the previous month.
+NEXTMONTH(): Returns a table of dates for the next month.
+SAMEPERIODLASTYEAR(): Returns the same period in the previous year.
+TOTALYTD(): Calculates year-to-date values.
+7. Ranking and Hierarchy
+RANKX(): Returns the ranking of a value in a table or column.
+PATH(): Returns a delimited string that represents a path from one node to another in a parent-child hierarchy.
+8. Statistical Functions
+MEDIAN(): Returns the median of a column.
+PERCENTILE.EXC() / PERCENTILE.INC(): Calculates a percentile.
+STDEV.P() / STDEV.S(): Calculates standard deviation for an entire population or sample.
+9. Table Manipulation Functions
+UNION(): Combines two or more tables into a single table.
+INTERSECT(): Returns the intersection of two tables.
+EXCEPT(): Returns the rows in the first table that do not appear in the second.
+ADDCOLUMNS(): Adds calculated columns to a table.
+SUMMARIZE(): Creates a summary table for the requested totals over a set of groups.
+10. Math & Statistical Functions
+DIVIDE(): Safely divides two numbers, returning alternate results for division by zero.
+ROUND(): Rounds a number to a specified number of digits.
+CEILING(): Rounds a number up to the nearest integer or multiple.
+FLOOR(): Rounds a number down to the nearest integer or multiple.
+11. Other Commonly Used Functions
+RELATED(): Fetches a value from a related table.
+LOOKUPVALUE(): Returns a single value based on a search condition.
+SWITCH(): Evaluates multiple expressions and returns the first one that is true.
+ISBLANK(): Checks if a value is blank.
+BLANK(): Returns a blank value.
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Aggregation Function----
+
+1. SUM--
+
+   SUM ( table[column] )
+   SUMX (table,table[column])
+
+Adds all the numbers in a column.
+
+exp---
+     Total Sales = SUM(Sales[SalesAmount])
+
+2. SUMX---
+
+SUMX(<table>, <expression>)
+
+Returns the sum of an expression evaluated for each row in a table
+
+Total Revenue = SUMX(Sales, Sales[Quantity] * Sales[UnitPrice])
+Filtered Revenue = SUMX(FILTER(Sales, Sales[Quantity] > 10),Sales[Quantity] * Sales[UnitPrice])
+
+3. Average-----
+ 
+AVERAGE ( table[column] )
+AVERAGEX (table,table[column])
+
+Returns the average (arithmetic mean) of all the numbers in a column.
+Average Sales = AVERAGE(Sales[SalesAmount])
+
+4. Max-----
+
+MAX ( table[column] )
+MAXX (table,table[column])
+
+Returns the largest value in a column, or the larger value between two scalar expressions. Ignores logical values. Strings are compared according to alphabetical order.
+
+5. Min----
+
+MIN ( table[column] )
+MINX (table,table[column])
+
+Returns the smallest value in a column, or the smaller value between two scalar expressions. Ignores logical values. Strings are compared according to alphabetical order.
+
+Minimum Sales = MIN(Sales[SalesAmount])
+
+6. Count----
+
+COUNT ( table[column] )
+COUNTX (table,table[column])
+
+Counts non-blank numeric values in a column.
+
+Total Count = COUNT(Sales[SalesAmount])
+
+
+7. CountA -----
+
+COUNTA ( table[column] )
+COUNTAX (table,table[column])
+
+Counts non-blank values (numeric, text, or logical) in a column.
+
+Count All = COUNTA(Sales[SalesAmount])
+
+8. CountX-------
+
+COUNTAX ( <Table>, <Expression> )
+
+Counts the rows in a table based on a logical expression.
+Count Sales > 100 = COUNTX(Sales,IF(Sales[SalesAmount] > 100, 1, BLANK()))
+
+9. DISTINCTCOUNT-----
+
+DISTINCTCOUNT ( table[column] )
+
+Counts the distinct (unique) values in a column.
+
+Distinct Sales Count = DISTINCTCOUNT(Sales[SalesAmount])
+
+10. COUNTROWS-----
+
+COUNTROWS ( table )
+COUNTROWS ( DISTINCT ( table ) )
+COUNTROWS ( VALUES ( table ) )
+
+Counts the total number of rows in a table
+
+Row Count = COUNTROWS(Sales).
+
+11. Countblank---
+
+COUNTBLANK(<column>)
+
+If no rows are found that meet the blank condition, the function returns blank.
+
+Blank Count = COUNTBLANK(Sales[SalesAmount]).
+
+Logical Function---------------
+
+12. If ---
+
+IF ( <LogicalTest>, <ResultIfTrue> )
+
+Checks whether a condition is met, and returns one value if TRUE, and another value if FALSE.
+
+Price Category = IF(Sales[Price] > 100, "Expensive", "Affordable")
+Price Category = IF(Sales[Price] < 50, "Low", IF(Sales[Price] <= 100, "Medium", "High"))
+
+13. AND-----
+
+AND(logical1, logical2)
+
+
+Checks whether all arguments are TRUE, and returns TRUE if all arguments are TRUE.
+
+The AND function accepts only two arguments. Consider using the operator && to avoid multiple nested calls in case there are three or more conditions to evaluate in a logical AND.
+
+High Sales Measure = IF(SUM(Sales[Revenue]) > 5000 && SUM(Sales[Quantity]) > 200, "Yes", "No").
+
+14. OR-----
+
+OR(condition1, condition2),
+
+Returns TRUE if any of the arguments are TRUE, and returns FALSE if all arguments are FALSE.
+
+IsPopular = Sales[Units Sold] > 500 || Sales[Revenue] > 10000
+
+Discount Eligibility = IF(OR(Sales[Category] = "A", Sales[Units Sold] > 500), "Eligible", "Not Eligible")
+
+15. Not()----
+
+NOT(logical)
+
+Changes FALSE to TRUE, or TRUE to FALSE.
+A logical expression that evaluates to TRUE or FALSE.
+
+Not Expensive = NOT(Sales[Price] > 100)
+Price Category = IF(NOT(Sales[Price] > 100), "Low or Medium", "High")
+
+ Date & Time Functions-----------
+
+16. TODAY(): --------
+
+TODAY()
+
+Returns the current date in datetime format.
+Today's Sales = CALCULATE(SUM('Sales'[Amount]),'Sales'[Order Date] = TODAY())
+
+17. Now():--------------
+
+NOW()
+
+Return Current date and time.
+Days Since Start = DATEDIFF(DATE(2024, 1, 1), NOW(), DAY)
+Current Month Sales = 
+CALCULATE(SUM(Sales[Amount]),MONTH(Sales[Date]) = MONTH(NOW()) &&
+YEAR(Sales[Date]) = YEAR(NOW()))
+
+18. Date()--------
+
+DATE(year, month, day)
+
+Returns the specified date in datetime format.
+DATE(2024, 12, 27)
+
+19. Year()--------
+
+YEAR(<date>)
+
+Returns the year of a date as a four digit integer.
+OrderYear = YEAR(Sales[OrderDate])
+
+20. DATEDIFF()-------
+
+DATEDIFF(<Start_Date>, <End_Date>, <Interval>)
+
+
+The DATEDIFF() function in DAX is used in Power BI to calculate the difference between two dates in a specified unit of time. It returns an integer value representing the difference.
+
+Delivery Days = DATEDIFF(Sales[Order Date], Sales[Delivery Date], DAY)
+
+21. EOMONTH()------
+
+EOMONTH(start_date, months)
+
+The EOMONTH() function in Power BI (DAX) is used to return the last day of the month that is a specified number of months before or after a given date.
+
+EndOfMonth = EOMONTH(Sales[Order Date], 0)
+FutureEndOfMonth = EOMONTH(Sales[Order Date], 3)
+
+22. WEEKDAY()------
+
+WEEKDAY(<date>, <return_type>)
+
+Returns a number identifying the day of the week of a date. The number is in a range 1-7 or 0-6 according to the choice of the ReturnType parameter.
+
+DayOfWeek_Custom = WEEKDAY('Sales'[OrderDate], 2)
+
+23. FORMAT()---------
+
+FORMAT(value, format_string[, locale_name])
+
+used to format values as text according to a specified format string. It is especially useful when you need to present numbers, dates, or other values in a specific format within your Power BI reports.
+
+Converts a value to text in the specified number format.
+
+FormattedValue = FORMAT(1234.56, "#,##0.00")
+FormattedDate = FORMAT(TODAY(), "dd-mm-yyyy")
+FormattedPercentage = FORMAT(0.853, "0.00%")
+
+
+Text Functions-------
+
+24. CONCATENATE() or CONCAT():
+
+CONCATENATE(<text1>, <text2>)
+
+Joins two text strings into one text string.
+
+FullName = CONCATENATE(Orders[FirstName], Orders[LastName])
+ConcatenatedProducts = CONCAT(Products[ProductNames])
+
+FullName = Orders[FirstName] & " " & Orders[LastName]
+
+25. LEFT():------
+LEFT(<text>, <num_chars>)
+
+Returns the specified number of characters from the start of a text string.
+DepartmentCode = LEFT('Table'[EmployeeID], 3)
+
+26. RIGHT():-------
+
+RIGHT(<text>, <num_chars>)
+
+Returns the specified number of characters from the end of a text string.
+
+ExtractedCode = RIGHT(Products[ProductCode], 5)
+CustomCode = CONCATENATE("Code-", RIGHT(Products[ProductCode], 5))
+
+27. MID():----
+
+MID(<text>, <start_position>, <num_chars>)
+
+Returns a string of characters from the middle of a text string, given a starting position and length.
+ExtractedText = MID(Employees[FullName], 1, 4)
+
+
+28. SEARCH():--------
+
+SEARCH(find_text, within_text, [start_position], [not_found_value])
+
+Returns the starting position of one text string within another text string. SEARCH is not case-sensitive, but it is accent-sensitive.
+
+ChairPosition = SEARCH("Chair", ProductName)
+ChairPositionFrom5 = SEARCH("Chair", ProductName, 5)
+ChairPositionSafe = SEARCH("Chair", ProductName, 1, -1)
+
+29. LEN()---------
+
+LEN(<text>)
+
+Returns the number of characters in a text string.
+
+NameLength = LEN(Customers[CustomerName])
+IsLongName = IF(LEN(Customers[CustomerName]) > 5, "Yes", "No")
+
+
+30. TRIM():------
+
+TRIM(<text>)
+
+Removes all spaces from a text string except for single spaces between words
+
+TrimmedName = TRIM(TableName[FullName])
+
+Filter Functions---------------
+
+31. FILTER()------
+
+FILTER(<table>, <filter_expression>)
+
+Returns a table that has been filtered.
+
+The FILTER function returns a table that meets a condition. It is often used in combination with other functions like CALCULATE.
+
+FilteredTable = FILTER(Sales, Sales[Amount] > 1000)
+
+32. ALL():--------------
+
+ALL([<table>] | <column>[, <column>[, ...]])
+
+The ALL() function in DAX (Data Analysis Expressions) is used to remove filters from a table or column. 
+It returns all the rows in a table or all the values in a column, ignoring any applied filters.
+
+Total Sales Without Any Filters = CALCULATE(SUM(Sales[Amount]), ALL(Sales))
+Percentage of Total Sales = DIVIDE(SUM(Sales[Amount]),CALCULATE(SUM(Sales[Amount]), ALL(Sales)))
+
+33. CALCULATE():---------
+CALCULATE(<expression>, [<filter1>], [<filter2>], ...)
+
+Evaluates an expression in a context modified by filters.
+CALCULATE function evaluates an expression in a modified filter context. It allows you to 
+change the context under which calculations are performed by applying filters or modifying existing ones.
+
+TotalSales2023 = CALCULATE(SUM(Sales[Sales Amount]), YEAR(Sales[Date]) = 2023)
+TotalSalesFiltered = CALCULATE(SUM(Sales[Sales Amount]),YEAR(Sales[Date]) = 2023,Sales[Sales Amount] > 600)
+TotalSalesAll = CALCULATE(SUM(Sales[Sales Amount]), ALL(Sales))
+
+34. KEEPFILTERS()----------
+
+KEEPFILTERS(<expression>)
+
+Changes the CALCULATE and CALCULATETABLE function filtering semantics.
+The KEEPFILTERS() function in DAX is used to preserve the existing filter context in a calculation, even when other filters are applied. Normally, DAX calculations ignore certain filters when using functions like CALCULATE. However, KEEPFILTERS() ensures that the original filter remains applied alongside any new ones.
+
+Sales_North = CALCULATE(SUM(Sales[SalesAmount]),Sales[Region] = "North")
+Sales_North_KeepFilters = CALCULATE(SUM(Sales[SalesAmount]),KEEPFILTERS(Sales[Region] = "North"))
+
+35. REMOVEFILTERS():--------------
+
+REMOVEFILTERS(<table|column>)
+
+The REMOVEFILTERS() function in DAX is used to remove filters from a table or column. 
+It clears any filter context that may have been applied, ensuring that the data returned by the expression is not influenced by those filters.
+Total Sales (No Product Filter) = CALCULATE(SUM(Sales[Revenue]),REMOVEFILTERS(Product))
+Total Sales (All Filters Removed) = CALCULATE(SUM(Sales[Revenue]),REMOVEFILTERS())
+
+Time Intelligence Functions-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
