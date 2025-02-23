@@ -399,44 +399,337 @@ Total Sales (All Filters Removed) = CALCULATE(SUM(Sales[Revenue]),REMOVEFILTERS(
 
 Time Intelligence Functions-----------------
 
+36. DATESYTD():---------------------
+
+DATESYTD(<dates>, [year_end_date])
+
+Returns a set of dates in the year up to the last date visible in the filter context.
+
+DATESYTD() is a DAX time intelligence function that returns a set of dates from the beginning of the year-to-date (YTD) period, based on the specified column containing dates.
+
+TotalSales_YTD = CALCULATE(SUM(Sales[Amount]),DATESYTD(Sales[Date]))
+
+37. DATESMTD():-------------------
+
+DATESMTD(<dates>)
+
+
+Returns a set of dates in the month up to the last date visible in the filter context.
+
+The DATESMTD function in DAX returns a table containing a column of dates for the month-to-date (MTD) period, starting from the beginning of the month up to the current date in the given context.
+
+MTD_Sales = CALCULATE(SUM(Sales[SalesAmount]), DATESMTD(Sales[Date]))
+
+
+38. DATESQTD():------------------
+
+DATESQTD(<dates>)
+
+Returns a set of dates in the quarter up to the last date visible in the filter context.
+
+The DATESQTD function in DAX returns a single-column table of dates for the quarter to date in the current context. It helps calculate cumulative values from the start of the current quarter up to a given date.
+
+Sales_QTD = CALCULATE(SUM(Sales[Amount]), DATESQTD(Sales[Date]))
+
+39. PREVIOUSMONTH():-------------------
+
+PREVIOUSMONTH(<dates>)
+
+Returns a previous month.
+
+The PREVIOUSMONTH() function in DAX returns a table that contains all the dates from the previous month, based on the given dates in a column.
+
+Total Sales Previous Month = 
+CALCULATE(
+    SUM(Sales[SalesAmount]), 
+    PREVIOUSMONTH(Sales[OrderDate])
+)
+
+40. NEXTMONTH():-------------
+
+NEXTMONTH(<dates>)
+
+Returns a next month.
+The NEXTMONTH() function in DAX (Data Analysis Expressions) returns a table that contains all the dates in the next month, based on a given column containing dates.
+
+NextMonthSales = 
+CALCULATE(
+    SUM('Sales'[SalesAmount]), 
+    NEXTMONTH('Sales'[OrderDate])
+)
+
+41. SAMEPERIODLASTYEAR():---------------
+
+SAMEPERIODLASTYEAR(<dates>)
+
+Returns a set of dates in the current selection from the previous year.
+The SAMEPERIODLASTYEAR() function in DAX (Data Analysis Expressions) is used to return a set of dates from the same period in the previous year. It is typically used in time-based calculations such as year-over-year comparisons.
+
+Sales_LastYear = 
+CALCULATE(
+    SUM(Sales[SalesAmount]),
+    SAMEPERIODLASTYEAR('Date'[Date])
+)
+
+42. TOTALYTD():------------
+
+TOTALYTD(<expression>, <dates>[, <filter>][, <year_end_date>])
+
+Evaluates the specified expression over the interval which begins on the first day of the year and ends with the last date in the specified date column after applying specified filters.
+The TOTALYTD function in DAX (Data Analysis Expressions) is used to calculate the year-to-date (YTD) total for a given measure or column, based on a specified date column.
+
+TotalSalesYTD = TOTALYTD(SUM(Sales[Amount]), Sales[Date])
+
+Ranking and Hierarchy Function ----------------------------------------------------------
+
+43. RANKX():------------
+
+RANKX( <table>,<expression>, [<value>], [<order>], [<ties>])
+
+
+Returns the rank of an expression evaluated in the current context in the list of values for the expression evaluated for each row in the specified table.
+The RANKX() function in DAX is used to return the rank of a value in a column based on a specified expression, within the context of a table. It assigns ranks to rows based on the evaluated expression, where the highest value gets the highest rank.
+
+SalesRank = 
+RANKX(
+    ALL(Employees),  -- The table
+    Employees[TotalSales]  -- The column to rank
+)
+
+44. PATH():---------------
+
+PATH(ChildColumn, ParentColumn)
+
+
+Returns a string which contains a delimited list of IDs, starting with the top/root of a hierarchy and ending with the specified ID.
+The PATH() function in DAX is used to return a delimited text string that represents the hierarchical path of an ID column in a parent-child hierarchy. It is commonly used in organizational hierarchies, such as employee-manager relationships.
+
+EmployeePath = PATH(Employee[EmployeeID], Employee[ManagerID])
+
+
+Statistical Functions --------------------------------------------------------------------
+
+
+45. MEDIAN()
+
+MEDIAN(<column>)
+
+Returns the 50th percentile of values in a column.
+The MEDIAN() function in DAX returns the median (middle) value from a column or an expression. The median is the value that separates the higher half from the lower half of a dataset.
+
+MedianSales = MEDIAN(SalesData[SalesAmount])
+
+46. PERCENTILE.EXC() / PERCENTILE.INC():------------------
+
+PERCENTILE.EXC(<column>, <k>)
+PERCENTILE.INC(<column>, <k>)
+
+
+PERCENTILE.EXC(): Returns the exclusive percentile of a dataset, meaning it excludes the first and last values and only considers percentiles between (1/(N+1)) and (N/(N+1)). It is useful when you want to calculate percentiles using interpolation.
+PERCENTILE.INC(): Returns the inclusive percentile, meaning it includes the first and last values and considers percentiles between 0 and 1. It is the standard percentile calculation.
+
+PERCENTILE_EXC_90 = PERCENTILE.EXC(Orders[Sales], 0.90)
+PERCENTILE_INC_90 = PERCENTILE.INC(Orders[Sales], 0.90)
+
+47. STDEV.P() / STDEV.S():------------------
+
+STDEV.P(<column>)
+The STDEV.P function calculates the standard deviation based on the entire population (P stands for Population). It assumes that the dataset contains all possible values of the population.
+PopulationStdDev = STDEV.P(SalesData[SalesAmount])
+
+
+STDEV.S(<column>)
+The STDEV.S function calculates the standard deviation based on a sample (S stands for Sample). It is used when the dataset represents only a subset of the entire population.
+SampleStdDev = STDEV.S(SalesData[SalesAmount])
 
 
 
+ Table Manipulation Functions--------------------------------------
+
+48. UNION():---------
+
+UNION(<Table1>, <Table2>[, <Table3>, ...])
+
+Returns the union of the tables whose columns match.
+The UNION() function in DAX is used to combine two or more tables by appending their rows. The resulting table contains all the rows from the input tables, but it does not remove duplicate rows unless explicitly handled with DISTINCT().
+
+Sales_Union = UNION(Sales2023, Sales2024)
+Sales_Union_Distinct = DISTINCT(UNION(Table1, Table2))
 
 
 
+49. INTERSECT():---------------------
+
+INTERSECT(<Table1>, <Table2>)
+
+Returns the rows of left-side table which appear in right-side table.
+The INTERSECT() function in DAX returns only the common rows that exist in both tables. It works like the SQL INTERSECT operation and only includes rows that appear in both tables exactly as they are.
+
+Common_Sales = INTERSECT(Sales2023, Sales2024)
+INTERSECT(Table1, Table2)  -- ❌ Error! Column mismatch
+The number and order of columns must match for INTERSECT() to work.
+
+50.EXCEPT():-----------------
+
+EXCEPT(<Table1>, <Table2>)
+
+
+ The EXCEPT() function in DAX returns the rows that are in the first table but not in the second table. It is similar to the SQL EXCEPT or MINUS operation.
+Sales_Only_2023 = EXCEPT(Sales2023, Sales2024)
+EXCEPT(Table1, Table2)  -- ❌ Error! Column mismatch
+The number and order of columns must match for EXCEPT() to work.
+
+51. ADDCOLUMNS():------------
+
+ADDCOLUMNS(<Table>, <ColumnName>, <Expression>[, <ColumnName>, <Expression>, ...])
+
+The ADDCOLUMNS() function in DAX adds calculated columns to a table. It allows you to create new columns dynamically by defining expressions based on existing columns.
+
+Sales_With_Total = ADDCOLUMNS(
+    Sales,
+    "Total Revenue", [Sales] * [Quantity]
+)
+
+52. SUMMARIZE():--------------
+
+SUMMARIZE(<Table>, <GroupByColumn1>, <GroupByColumn2>, ..., [<ColumnName>, <Expression>])
+
+The SUMMARIZE() function is used to create a grouped summary table based on specified columns, optionally adding calculated columns. It is similar to GROUP BY in SQL.
+
+GroupedSales = SUMMARIZE(Sales, Sales[Product], Sales[Region])
+
+ Math & Statistical Functions----------------------------------------------------------
+
+53. DIVIDE():--------
+
+DIVIDE(<Numerator>, <Denominator>[, <AlternateResult>])
+
+The DIVIDE() function in DAX is used to safely divide two numbers while handling division by zero errors. Instead of returning an error when dividing by zero, DIVIDE() returns a specified alternative result (or BLANK() by default).
+
+Sales_Per_Unit = DIVIDE(Sales[Total Sales], Sales[Units Sold])
+
+54. CEILING():---------
+
+CEILING(<Number>, <Significance>)
+
+The CEILING() function in DAX rounds a number up to the nearest multiple of a specified significance.
+RoundedValue = CEILING(23, 5)
+RoundedValue = CEILING(12.3, 0.5)
+Result: 12.5
+
+12.3 is rounded up to the nearest multiple of 0.5
+
+55.FLOOR():--------
+
+FLOOR(<Number>, <Significance>)
+
+The FLOOR() function in DAX rounds a number down to the nearest multiple of a specified significance. It always rounds towards zero.
+
+FLOOR(17, 5)
+FLOOR(18.7, 0.5)
+Result: 18.5
+
+18.7 is rounded down to the nearest multiple of 0.5.
+
+
+Other Commonly Used Functions-----------------------------------------------
+
+
+56. RELATED():-------
+
+RELATED(<ColumnName>)
+
+The RELATED() function in DAX is used to fetch a value from a related table in a one-to-many (or many-to-one) relationship. It works like a VLOOKUP in Excel, allowing you to bring data from a related table into the current table.
+CategoryColumn = RELATED(Products[Category])
+
+57. LOOKUPVALUE():-------------
+
+LOOKUPVALUE(<Result_Column>, <Search_Column1>, <Search_Value1>[, <Search_Column2>, <Search_Value2>, ...])
+
+The LOOKUPVALUE() function in DAX is used to retrieve a single value from a column in a table based on one or more search criteria. It works like a VLOOKUP in Excel but is more powerful because it supports multiple conditions.
+Employee_Dept = LOOKUPVALUE(Employee[Department], Employee[EmployeeID], 102)
+
+58. SWITCH():---------
+
+SWITCH(<Expression>, <Value1>, <Result1>, <Value2>, <Result2>, ..., [<Else>])
+
+The SWITCH() function in DAX is used to evaluate an expression and return different values based on predefined conditions. It is similar to a CASE statement in SQL or an IF-ELSE structure in programming.
+Category_Column = SWITCH(
+    Sales[Product],
+    "A", "Phones",
+    "B", "Laptops",
+    "C", "Tablets",
+    "Unknown"
+)
+
+Performance_Rating = SWITCH(
+    TRUE(),
+    Sales[Sales] > 1000, "Excellent",
+    Sales[Sales] > 800, "Good",
+    Sales[Sales] > 500, "Average",
+    "Poor"
+)
+
+59. ISBLANK():-------
+
+ISBLANK(<value>)
+
+The ISBLANK() function in DAX checks if a value is blank (empty or null) and returns TRUE if it is blank, otherwise, it returns FALSE.
+Sales_Is_Blank = ISBLANK(Sales[Sales])
+
+60. BLANK():-------
+
+BLANK()
+
+The BLANK() function in DAX returns a blank value, which is different from zero, an empty string (""), or NULL in SQL. It is used to handle missing or undefined data in calculations.
+
+Sales_Adjusted = ADDCOLUMNS(
+    Sales,
+    "Adjusted Sales", IF(Sales[Sales] = 0, BLANK(), Sales[Sales])
+)
 
 
 
+Another Dax-----
+
+61. SELECTEDVALUE():-----
+
+SELECTEDVALUE(<Column>[, <AlternateResult>])
+
+Returns the value of a column when a single value is selected; otherwise, returns a specified alternate result (or BLANK).
+
+SelectedProduct = SELECTEDVALUE(Sales[Product], "Multiple Products Selected")
+
+62. USERELATIONSHIP():------
+
+CALCULATE(<Expression>, USERELATIONSHIP(<Column1>, <Column2>))
+
+Forces DAX to use a specific inactive relationship between tables.
+TotalSales_UsingOrderDate = CALCULATE(SUM(Orders[SalesAmount]), USERELATIONSHIP(Orders[OrderDate], Calendar[Date]))
+
+63. VALUES():-----
+
+VALUES(<Column>)
+
+Returns a one-column table with unique values from a specified column.
+SelectedProduct = IF(HASONEVALUE(Sales[Product]), VALUES(Sales[Product]), "Multiple Products")
+
+
+64. DISTINCT():-----
+
+DISTINCT(<Column>)
+
+Returns a one-column table with unique values from a specified column.
+DistinctCategories = DISTINCT(Products[Category])
 
 
 
+65. TOPN():-----
 
+TOPN(<N>, <Table>, <OrderBy_Expression>, [Order])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Returns the top N rows from a table based on an expression.
+Top5Products = TOPN(5, Sales, Sales[SalesAmount], DESC)
 
 
 
