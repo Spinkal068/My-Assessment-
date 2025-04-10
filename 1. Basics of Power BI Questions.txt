@@ -1,0 +1,1089 @@
+1. Basics of Power BI
+What is Power BI?
+A business analytics tool from Microsoft for visualizing data and sharing insights across organizations.
+
+What are the key components of Power BI?
+Power BI Desktop, Power BI Service, Power BI Mobile, Power BI Report Server, Power BI Gateway.
+
+Difference between Power BI Desktop and Service?
+Desktop is for creating reports; Service is for publishing, sharing, and collaborating.
+
+What is DAX?
+Data Analysis Expressions – a formula language used in Power BI for calculations.
+
+What are Power BI data sources?
+Excel, SQL Server, SharePoint, Web, APIs, Azure, etc.
+
+What is Power Query?
+A data transformation and cleansing tool in Power BI.
+
+Difference between Power Query and DAX?
+Power Query is used for ETL (extract-transform-load), while DAX is for calculations on the data model.
+
+What is a dataset in Power BI?
+A collection of data imported or connected to for creating reports.
+
+What is a report in Power BI?
+A multi-page visualization created from a dataset.
+
+What is a dashboard in Power BI?
+A single-page visualization pinning visuals from multiple reports.
+
+🔹 2. Data Modeling
+What is a relationship in Power BI?
+It links two tables based on a common column.
+
+What are the types of relationships?
+One-to-many, Many-to-one, One-to-one.
+
+How to handle many-to-many relationships?
+Use a bridge table.
+
+What is a calculated column?
+A new column added using DAX.
+
+What is a measure?
+A dynamic calculation created using DAX.
+
+What is the difference between a measure and a calculated column?
+Measures are calculated at query time; calculated columns are stored in the data model.
+
+What is star schema and snowflake schema?
+Star: Central fact table with dimension tables.
+Snowflake: Dimension tables are normalized into sub-dimensions.
+
+When to use star vs snowflake schema?
+Star is better for performance and simplicity.
+
+What is a fact table?
+A table with measurable data like sales, revenue.
+
+What is a dimension table?
+A table with descriptive attributes like customer, date.
+
+🔹 3. DAX (Data Analysis Expressions)
+What is DAX used for?
+Creating calculated columns, measures, and custom tables.
+
+What does CALCULATE() do?
+Changes context of a calculation.
+
+What is the difference between SUM() and SUMX()?
+SUM adds up column values directly; SUMX does row-wise calculation.
+
+What is FILTER()?
+Returns a table that matches a condition.
+
+Explain ALL() function in DAX.
+Removes filters from columns/tables.
+
+What is RELATED()?
+Brings data from related table.
+
+What is the use of VALUES()?
+Returns a one-column table of unique values.
+
+What does DISTINCT() do?
+Returns unique values from a column.
+
+How to calculate Year-To-Date (YTD)?
+TOTALYTD([Measure], 'Date'[Date])
+
+How to calculate Month-over-Month?
+Use SAMEPERIODLASTYEAR() or PARALLELPERIOD() with time intelligence.
+
+🔹 4. Power Query (M Language)
+What is Power Query?
+A tool to load, transform, and prepare data before modeling.
+
+What language does Power Query use?
+M Language.
+
+What is Applied Steps?
+Sequence of transformations applied in Power Query.
+
+How to remove duplicate rows in Power Query?
+Home > Remove Rows > Remove Duplicates.
+
+How to merge queries?
+Use Home > Merge Queries to join tables.
+
+What is the difference between Merge and Append?
+Merge joins tables; Append stacks them vertically.
+
+How to pivot data in Power Query?
+Use Transform > Pivot Column.
+
+How to unpivot data in Power Query?
+Use Transform > Unpivot Columns.
+
+How to create a custom column?
+Add Column > Custom Column.
+
+What is parameter in Power Query?
+Dynamic input value used in queries.
+
+🔹 5. Visualizations
+What visuals are available in Power BI?
+Bar, Line, Pie, Table, Card, Matrix, Gauge, Map, etc.
+
+What is a slicer in Power BI?
+A filter for visuals on a report page.
+
+Difference between slicer and filter?
+Slicers are visual; filters are in the pane.
+
+What is a tooltip?
+Popup info when hovering over visuals.
+
+How to show trend line?
+Use Line chart or enable in Analytics pane.
+
+How to highlight outliers?
+Use conditional formatting or reference lines.
+
+What is drill down in Power BI?
+Explore data hierarchically in visuals.
+
+How to sync slicers across pages?
+View > Sync Slicers.
+
+What is Bookmark?
+Captures the state of a report view for navigation or storytelling.
+
+How to customize visuals?
+Use Format pane to adjust colors, labels, titles, etc.
+
+🔹 6. Power BI Service
+What is Power BI Service?
+Cloud-based platform to share and collaborate on reports.
+
+What is a workspace?
+A container for dashboards, reports, datasets, and workbooks.
+
+What are roles in a workspace?
+Admin, Member, Contributor, Viewer.
+
+How to schedule data refresh?
+Use dataset settings in Power BI Service.
+
+What is a data gateway?
+A bridge to connect on-premise data to Power BI Service.
+
+Types of data gateways?
+Personal and Standard (Enterprise).
+
+What is Row-Level Security (RLS)?
+Restricts data access per user.
+
+How to implement RLS?
+Create roles in Desktop and assign filters.
+
+What is Power BI App?
+A bundled collection of reports and dashboards shared with users.
+
+How to share a report?
+Publish to workspace, then share via dashboard, link, or app.
+
+🔹 7. Advanced Power BI
+What is composite model?
+Combines DirectQuery and Import data.
+
+What is incremental refresh?
+Refreshes only new/changed data instead of full reload.
+
+What is usage metrics?
+Tracks report/dashboard usage statistics.
+
+How to optimize Power BI performance?
+Reduce visuals, avoid complex DAX, use star schema, filter data early.
+
+What is paginated report?
+Pixel-perfect reports designed for printing.
+
+Difference between Import and DirectQuery?
+Import loads data into model; DirectQuery queries source in real time.
+
+When to use DirectQuery?
+When real-time data is needed or large datasets are involved.
+
+What are custom visuals?
+Third-party visuals added from marketplace.
+
+How to secure data in Power BI?
+Use RLS, user access roles, tenant settings, and workspace permissions.
+
+What is Power BI Embedded?
+Embeds Power BI visuals in custom applications.
+
+🔹 8. Scenario-Based Questions
+How to show only last 12 months of data?
+Use DAX filter: DATESINPERIOD().
+
+How to handle null values?
+Replace or filter them in Power Query or DAX.
+
+How to compare current month vs previous month sales?
+Use CALCULATE() with PARALLELPERIOD().
+
+How to show Top 5 products by sales?
+Use Top N filter or DAX with RANKX().
+
+How to remove duplicate customers?
+Use DISTINCT or remove duplicates in Power Query.
+
+How to flag new customers?
+Use MIN([PurchaseDate]) = SelectedMonth.
+
+How to calculate cumulative sales?
+Use TOTALYTD() or running total pattern.
+
+How to calculate active clients based on slicers?
+Use date slicer with DAX to count those active during the period.
+
+How to export data from Power BI?
+Use Export options or underlying data export.
+
+How to add dynamic titles in visuals?
+Use a measure and bind it to title using fx in Format pane.
+
+🔹 9. Power BI with Other Tools
+Can Power BI connect with Excel?
+Yes, it supports Excel files as a data source.
+
+How to connect Power BI with SQL Server?
+Use Get Data > SQL Server.
+
+Can Power BI connect with SharePoint?
+Yes, via SharePoint Folder or List.
+
+Can Power BI consume APIs?
+Yes, through Web connector and custom connectors.
+
+How does Power BI integrate with Azure?
+Via Azure SQL, Azure Data Lake, Azure Synapse, etc.
+
+What is Power BI Gateway used for?
+Securely connects on-premises data to cloud services.
+
+Can Power BI write back to databases?
+Not directly—requires third-party tools or Power Apps.
+
+How does Power BI integrate with Power Automate?
+Triggers alerts and workflows based on data changes.
+
+Can we schedule emails in Power BI?
+Yes, via subscriptions in Service.
+
+How to embed Power BI in a website?
+Use embed code or Power BI Embedded API.
+
+🔹 10. Best Practices & Miscellaneous
+What are Power BI best practices?
+Use star schema, reduce visuals, avoid bi-directional filters, use measures instead of calculated columns.
+
+How to reduce report size?
+Remove unused columns, optimize data types, use aggregations.
+
+What are KPIs in Power BI?
+Visuals that show performance against a goal.
+
+Can Power BI be used offline?
+Power BI Desktop can be used offline.
+
+What is the size limit of dataset in Power BI Pro?
+1 GB per dataset.
+
+What is the maximum number of rows for export?
+150,000 rows with summarized data.
+
+What is DAX Studio?
+An external tool for analyzing and optimizing DAX queries.
+
+What is Tabular Editor?
+A tool to manage Power BI data models efficiently.
+
+How to use tooltips for detail view?
+Create a tooltip page and set visual to display on hover.
+
+What’s the difference between Power BI Pro and Premium?
+Pro is per-user licensing; Premium offers larger capacity, enhanced performance, and features.
+
+
+
+
+/**********************************************************************************************************************************************/
+
+
+----Another Questions of Power BI--------
+
+
+1. Introduction to Power BI
+
+Q1. What is Power BI?
+Power BI is a business analytics solution developed by Microsoft that enables users to visualize data, share insights, and make data-driven decisions. It offers tools to transform raw data into informative dashboards and interactive reports.
+
+Q2. What are the key components of Power BI?
+
+Power BI Desktop: Authoring and publishing tool.
+
+Power BI Service (Cloud): Sharing, collaboration, and web-based reporting.
+
+Power BI Mobile: Accessing dashboards on mobile devices.
+
+Power BI Gateway: Bridges on-premises data sources to Power BI Service.
+
+Power BI Report Server: On-premise solution for hosting reports.
+
+Power BI Embedded: Used to embed reports into custom applications.
+
+Q3. What are the different types of data connectivity modes in Power BI?
+
+Import: Data is loaded into Power BI model.
+
+DirectQuery: Queries are sent directly to the data source.
+
+Live Connection: For SSAS models, data is live connected.
+
+Composite Model: Combines Import and DirectQuery in a single report.
+
+2. Data Transformation and Power Query
+
+Q4. What is Power Query?
+Power Query is a data connection technology that enables data transformation and cleansing before loading it into the data model. It uses the M language.
+
+Q5. What are some common data transformation steps in Power Query?
+
+Remove columns/rows
+
+Rename columns
+
+Replace values
+
+Split columns
+
+Merge/Append queries
+
+Group data
+
+Pivot/Unpivot data
+
+Create custom columns using M
+
+Q6. What is the difference between Merge and Append?
+
+Merge: Joins two tables based on a key column.
+
+Append: Combines rows from two or more tables vertically.
+
+3. Data Modeling in Power BI
+
+Q7. What is a data model in Power BI?
+A data model is the backbone of Power BI, defining how data tables relate to one another using relationships, measures, and calculated columns.
+
+Q8. What are the types of relationships in Power BI?
+
+One-to-Many
+
+Many-to-One
+
+One-to-One
+
+Many-to-Many (using bridge tables or composite models)
+
+Q9. Explain star and snowflake schema.
+
+Star Schema: Central fact table with directly linked dimension tables.
+
+Snowflake Schema: Normalized dimension tables with sub-dimensions.
+
+Q10. What is Row-Level Security (RLS)?
+RLS restricts data access for specific users based on roles defined in the data model using DAX filters.
+
+4. DAX (Data Analysis Expressions)
+
+Q11. What is DAX?
+DAX stands for Data Analysis Expressions. It is a formula language used for creating calculated columns, measures, and custom tables in Power BI.
+
+Q12. What is the difference between Calculated Columns and Measures?
+
+Calculated Column: Evaluated row-by-row and stored in memory.
+
+Measure: Evaluated dynamically based on filter context.
+
+Q13. Explain commonly used DAX functions.
+
+CALCULATE(): Changes filter context.
+
+FILTER(): Returns a filtered table.
+
+SUMX(), AVERAGEX(): Iterative aggregations.
+
+RELATED(): Fetch data from related tables.
+
+ALL(): Removes filters.
+
+VALUES(): Returns unique values.
+
+Q14. What are Time Intelligence functions?
+Functions used to perform date-based calculations like:
+
+TOTALYTD, SAMEPERIODLASTYEAR, DATESYTD, DATEADD, etc.
+
+Q15. How do you calculate Year-to-Date Sales in DAX?
+
+YTD Sales = TOTALYTD(SUM(Sales[Amount]), 'Date'[Date])
+
+5. Visualizations in Power BI
+
+Q16. What types of visuals are available in Power BI?
+Bar chart, line chart, area chart, pie chart, matrix, table, card, slicers, gauges, KPIs, maps, decomposition tree, and custom visuals.
+
+Q17. What is the use of slicers?
+Slicers allow users to filter report data dynamically.
+
+Q18. How do you implement Drill Down in Power BI?
+Use hierarchy fields in visuals and enable drill down using the on-visual buttons.
+
+Q19. What are tooltips in Power BI?
+Tooltips display additional context when hovering over visuals. You can use report pages as tooltips.
+
+Q20. What are bookmarks and selections?
+Bookmarks save the current state of a report page. Selections manage visibility of visuals for storytelling or navigation.
+
+6. Power BI Service & Deployment
+
+Q21. How do you publish a report to Power BI Service?
+Click the “Publish” button in Power BI Desktop and choose the workspace in the Service.
+
+Q22. What are workspaces in Power BI Service?
+Containers for organizing content like datasets, reports, and dashboards.
+
+Q23. What is a Power BI Dashboard?
+A one-page summary with pinned visuals from one or more reports.
+
+Q24. What is a Power BI App?
+A packaged version of content (dashboards and reports) for distribution within the organization.
+
+Q25. What are the data refresh options in Power BI Service?
+
+Scheduled Refresh
+
+On-demand Refresh
+
+Live Connection (real-time)
+
+Q26. What is Power BI Gateway?
+A bridge to securely connect on-premises data sources to Power BI Service.
+
+7. Performance Optimization & Best Practices
+
+Q27. How do you optimize Power BI performance?
+
+Use star schema.
+
+Minimize columns and rows.
+
+Prefer measures over calculated columns.
+
+Avoid bi-directional relationships unless necessary.
+
+Use aggregations and summary tables.
+
+Q28. How to handle large datasets?
+
+Use aggregations.
+
+Apply filters to limit data.
+
+Use incremental refresh.
+
+Q29. What is Incremental Refresh?
+A method to only refresh data that has changed rather than the entire dataset, improving performance.
+
+Q30. What is Composite Model in Power BI?
+Allows combining Import and DirectQuery in a single model.
+
+8. Power BI Advanced Topics
+
+Q31. What are Paginated Reports?
+Pixel-perfect reports ideal for printing, created using Power BI Report Builder.
+
+Q32. What is Power BI Embedded?
+Embedding Power BI content (reports and dashboards) in custom applications.
+
+Q33. What is the difference between Power BI Pro and Premium?
+
+Pro: Per-user license, up to 1 GB dataset size.
+
+Premium: Organizational license, larger datasets, paginated reports, AI features.
+
+Q34. What external tools can be used with Power BI?
+
+DAX Studio
+
+Tabular Editor
+
+ALM Toolkit
+
+Power BI Helper
+
+Q35. What is DAX Studio used for?
+To write, debug, and optimize DAX queries.
+
+9. Scenario-Based Questions
+
+Q36. How do you show Top 5 customers by sales?
+Use visual filters or RANKX() in DAX.
+
+Q37. How do you handle null or missing values?
+Clean in Power Query using “Replace Values” or “Remove Rows”.
+
+Q38. How do you calculate running total in Power BI?
+
+Running Total =
+CALCULATE(
+    SUM(Sales[Amount]),
+    FILTER(
+        ALLSELECTED('Date'[Date]),
+        'Date'[Date] <= MAX('Date'[Date])
+    )
+)
+
+Q39. How do you implement dynamic titles in visuals?
+Create a DAX measure and bind it to the visual title using the "fx" option in the Format pane.
+
+Q40. How do you calculate active clients in a selected period?
+
+Active Clients =
+CALCULATE(
+    DISTINCTCOUNT(Clients[ClientID]),
+    FILTER(
+        Clients,
+        Clients[StartDate] <= MAX('Date'[Date]) &&
+        (ISBLANK(Clients[EndDate]) || Clients[EndDate] >= MIN('Date'[Date]))
+    )
+)
+
+This guide provides a solid foundation for preparing for Power BI interviews. Let me know if you want this exported as a PDF or if you'd like additional mock interview questions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***********************************************************************************/
+
+1. Introduction to Power BI
+
+Q1. What is Power BI?
+Power BI is a powerful business analytics tool developed by Microsoft that helps users to analyze data and share insights. With Power BI, users can create interactive dashboards and reports that provide a unified view of business data, enabling data-driven decision-making.
+
+Q2. What are the main components of Power BI?
+
+Power BI Desktop: A Windows desktop application used to create reports and data models.
+
+Power BI Service (Cloud-based): An online Software as a Service (SaaS) service for sharing and collaborating on reports.
+
+Power BI Mobile: Mobile apps for Android and iOS to view dashboards.
+
+Power BI Gateway: Used to connect and refresh on-premises data in Power BI Service.
+
+Power BI Report Server: An on-premises report server where you can publish Power BI reports.
+
+Power BI Embedded: Allows embedding of Power BI visuals into custom applications.
+
+Q3. What are the different types of data connectivity modes in Power BI?
+
+Import Mode: Data is loaded into Power BI’s internal model and optimized for performance.
+
+DirectQuery Mode: Data remains in the source system; Power BI sends queries on demand.
+
+Live Connection: Similar to DirectQuery but only for Analysis Services models.
+
+Composite Model: Allows combining Import and DirectQuery modes in a single model.
+
+2. Power Query and Data Transformation
+
+Q4. What is Power Query in Power BI?
+Power Query is a data transformation engine in Power BI used for importing, cleaning, and reshaping data before loading it into the model. It uses M Language.
+
+Q5. What are common data transformation tasks in Power BI?
+
+Filtering rows
+
+Removing duplicates
+
+Splitting or merging columns
+
+Pivoting and unpivoting columns
+
+Replacing values
+
+Changing data types
+
+Merging and appending queries
+
+Q6. Difference between Merge and Append in Power BI?
+
+Merge: Joins data from two tables based on matching columns (similar to SQL JOIN).
+
+Append: Stacks data from multiple tables (similar to SQL UNION).
+
+3. Data Modeling
+
+Q7. What is a data model in Power BI?
+A data model is a structure that defines relationships between data tables, calculations, and data types that Power BI uses to generate visuals and reports.
+
+Q8. What are the types of relationships in Power BI?
+
+One-to-Many (most common)
+
+Many-to-One
+
+One-to-One
+
+Many-to-Many (using composite models or bridge tables)
+
+Q9. Explain Star Schema and Snowflake Schema.
+
+Star Schema: A central fact table connected to dimension tables.
+
+Snowflake Schema: A more normalized form with dimension tables connected to sub-dimensions.
+
+Q10. What is Row-Level Security (RLS)?
+RLS is used to restrict data access for users at the row level, based on roles defined in the Power BI model using DAX filters.
+
+4. DAX (Data Analysis Expressions)
+
+Q11. What is DAX?
+DAX stands for Data Analysis Expressions. It is a formula language used in Power BI to define calculations and expressions for calculated columns, measures, and custom tables.
+
+Q12. Difference between Measures and Calculated Columns?
+
+Calculated Column: Calculated during data load and stored in the model. Evaluated row-by-row.
+
+Measure: Evaluated at runtime depending on filters applied. More efficient than calculated columns.
+
+Q13. What are some common DAX functions?
+
+SUM, AVERAGE, COUNT, DISTINCTCOUNT
+
+CALCULATE, FILTER, ALL, VALUES
+
+Time Intelligence: TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, DATEADD
+
+Q14. How to calculate Year-to-Date (YTD) using DAX?
+
+YTD Sales = TOTALYTD(SUM(Sales[Amount]), 'Date'[Date])
+
+Q15. How to calculate Running Total in DAX?
+
+Running Total = 
+CALCULATE(
+    SUM(Sales[Amount]),
+    FILTER(
+        ALLSELECTED('Date'[Date]),
+        'Date'[Date] <= MAX('Date'[Date])
+    )
+)
+
+5. Visualizations and Reporting
+
+Q16. What types of visuals are available in Power BI?
+
+Charts (bar, line, pie, etc.)
+
+Cards and KPIs
+
+Maps
+
+Tables and Matrices
+
+Decomposition Tree
+
+Waterfall, Funnel
+
+Custom visuals from the marketplace
+
+Q17. What are slicers in Power BI?
+Slicers are visual filters that allow users to filter report data interactively.
+
+Q18. What is Drill Down and Drill Through?
+
+Drill Down: Allows users to explore hierarchical data within a single visual.
+
+Drill Through: Allows users to navigate to another report page with detailed info based on the selected item.
+
+Q19. What are Tooltips in Power BI?
+Tooltips show additional information when you hover over visuals. You can use custom report pages as tooltips.
+
+Q20. What are Bookmarks in Power BI?
+Bookmarks capture the current state of a report page including filters, visibility, and selections for storytelling.
+
+6. Power BI Service and Deployment
+
+Q21. What is the Power BI Service?
+A cloud-based platform where users can publish, share, and collaborate on reports and dashboards.
+
+Q22. What are workspaces in Power BI Service?
+Workspaces are collaborative environments where teams can create, manage, and share Power BI content.
+
+Q23. What is a Dashboard in Power BI?
+A dashboard is a single-page summary created by pinning visuals from one or more reports.
+
+Q24. What is a Power BI App?
+An app is a collection of dashboards and reports bundled together and distributed to end-users.
+
+Q25. What are the different data refresh types in Power BI?
+
+Manual Refresh
+
+Scheduled Refresh
+
+Live/DirectQuery Connections
+
+Q26. What is Power BI Gateway?
+A gateway allows secure data transfer between on-premise data sources and Power BI Service.
+
+7. Optimization and Performance
+
+Q27. How to improve Power BI report performance?
+
+Use star schema
+
+Minimize the number of visuals
+
+Avoid complex DAX if not needed
+
+Use summary/aggregation tables
+
+Use calculated measures instead of calculated columns
+
+Q28. What is Incremental Refresh?
+A feature that refreshes only newly added or modified data instead of the entire dataset.
+
+Q29. What is Composite Model?
+A feature that allows combining Import and DirectQuery in the same report.
+
+Q30. What is Query Folding?
+The process where transformations in Power Query are translated into native queries for data source optimization.
+
+8. Advanced Topics and External Tools
+
+Q31. What is Power BI Embedded?
+A service that allows you to embed Power BI visuals into custom applications.
+
+Q32. What is the difference between Power BI Pro, Premium, and Free?
+
+Free: Only personal use, cannot share content.
+
+Pro: Share and collaborate, max dataset size of 1 GB.
+
+Premium: Dedicated capacity, supports large models, paginated reports.
+
+Q33. What are external tools used with Power BI?
+
+DAX Studio: For DAX query performance.
+
+Tabular Editor: Advanced data modeling.
+
+ALM Toolkit: Model comparison and deployment.
+
+Power BI Helper: Model documentation.
+
+Q34. What is Paginated Report?
+Paginated reports are fixed-layout reports ideal for printing and exporting to PDF or Excel.
+
+Q35. What is the Power BI REST API?
+APIs that allow programmatic interaction with Power BI resources like reports, dashboards, datasets, etc.
+
+9. Real-World Scenarios
+
+Q36. How do you display Top N values dynamically?
+Use slicer + DAX ranking with RANKX() and filter only top N values in a visual.
+
+Q37. How do you handle missing or null values?
+Clean data in Power Query using Replace Values, Fill Down/Up, or removing null rows.
+
+Q38. How to create a dynamic title in Power BI?
+Create a DAX measure that returns a string and bind it to visual title using the fx button.
+
+Q39. How to count active clients based on selected period?
+
+Active Clients = 
+CALCULATE(
+    DISTINCTCOUNT(Client[ClientID]),
+    FILTER(
+        Client,
+        Client[StartDate] <= MAX('Date'[Date]) &&
+        (ISBLANK(Client[EndDate]) || Client[EndDate] >= MIN('Date'[Date]))
+    )
+)
+
+Q40. How do you ensure data security in Power BI?
+
+Use Row-Level Security (RLS)
+
+Secure access through workspaces and apps
+
+Use Azure Active Directory for authentication
+
+
+
+
+
+
+/********************************************************************************************************/
+
+
+1. Data Preparation and Transformation Scenarios
+
+Q1. You have a sales dataset where dates are stored as text. How would you convert them into a usable date format and extract month and year?
+Answer:
+
+In Power Query, use Transform > Data Type > Date to convert the text column.
+
+Create new columns using:
+
+Date.Month([Date]) for Month
+
+Date.Year([Date]) for Year
+
+Q2. How would you handle missing or null values in Power BI?
+Answer:
+
+In Power Query:
+
+Use Remove Rows > Remove Blank Rows
+
+Or replace nulls using Transform > Replace Values
+
+Or use Fill Down/Up
+
+In DAX: Use IF(ISBLANK([Column]), "Default", [Column])
+
+Q3. You have sales data from multiple sources (Excel, SQL, API). How do you consolidate them?
+Answer:
+
+Connect to each source using Power Query.
+
+Use Append Queries to combine them.
+
+Apply necessary transformations to standardize columns.
+
+2. Data Modeling Scenarios
+
+Q4. You have tables: Sales, Products, Customers. How would you model them for analysis?
+Answer:
+
+Sales is the fact table.
+
+Products and Customers are dimension tables.
+
+Create relationships:
+
+Sales[ProductID] → Products[ProductID]
+
+Sales[CustomerID] → Customers[CustomerID]
+
+Use a star schema for performance.
+
+Q5. A report is slow and you suspect relationships might be the issue. What would you check?
+Answer:
+
+Avoid bi-directional relationships unless necessary.
+
+Ensure columns used in relationships have no duplicates (in dimension tables).
+
+Reduce Many-to-Many relationships.
+
+Q6. How would you implement role-based data access in Power BI?
+Answer:
+
+Define roles in Modeling > Manage Roles.
+
+Apply DAX filters like:
+
+[Region] = USERPRINCIPALNAME()
+
+Publish and test roles in Power BI Service.
+
+3. DAX and Calculation Scenarios
+
+Q7. You want to show total sales of current year, previous year and year-over-year growth. How would you do that?
+Answer:
+
+CurrentYearSales = CALCULATE(SUM(Sales[Amount]), YEAR(TODAY()) = YEAR(Sales[Date]))
+PreviousYearSales = CALCULATE(SUM(Sales[Amount]), YEAR(TODAY())-1 = YEAR(Sales[Date]))
+YoYGrowth = DIVIDE([CurrentYearSales] - [PreviousYearSales], [PreviousYearSales])
+
+Q8. How do you show running total of sales in a table visual?
+Answer:
+
+RunningTotal = 
+CALCULATE(
+    SUM(Sales[Amount]),
+    FILTER(ALLSELECTED('Date'[Date]), 'Date'[Date] <= MAX('Date'[Date]))
+)
+
+Q9. You need to calculate average sales per customer but only for those who purchased more than 3 times.
+Answer:
+
+AvgSales = 
+AVERAGEX(
+    FILTER(
+        VALUES(Customer[CustomerID]),
+        CALCULATE(COUNT(Sales[SaleID])) > 3
+    ),
+    CALCULATE(SUM(Sales[Amount]))
+)
+
+4. Reporting and Visualization Scenarios
+
+Q10. Users want to view top 5 products dynamically based on slicer. How would you do this?
+Answer:
+
+Create a What-If parameter for top N.
+
+Use DAX:
+
+Rank = RANKX(ALLSELECTED(Products), [TotalSales])
+
+Apply filter on visual: Rank <= SelectedValue(TopNParameter)
+
+Q11. How do you create a dynamic title in Power BI visuals?
+Answer:
+
+Create a measure:
+
+Title = "Sales Report for " & SELECTEDVALUE(Region[RegionName], "All Regions")
+
+Use fx icon in visual title to bind this measure.
+
+Q12. You want to create a custom tooltip showing detailed breakdown when hovering over a visual.
+Answer:
+
+Create a new report page, set Page Information > Tooltip = On.
+
+Design the page.
+
+In main visual, set Tooltip to custom page.
+
+5. Time Intelligence Scenarios
+
+Q13. How would you calculate MTD, QTD, YTD in Power BI?
+Answer:
+
+MTD = TOTALMTD(SUM(Sales[Amount]), 'Date'[Date])
+QTD = TOTALQTD(SUM(Sales[Amount]), 'Date'[Date])
+YTD = TOTALYTD(SUM(Sales[Amount]), 'Date'[Date])
+
+Q14. How do you compare sales of the current month with the same month last year?
+
+SalesLastYear = CALCULATE(SUM(Sales[Amount]), SAMEPERIODLASTYEAR('Date'[Date]))
+
+Q15. How to calculate number of active clients in any selected month?
+Answer:
+
+ActiveClients = 
+CALCULATE(
+    DISTINCTCOUNT(Client[ClientID]),
+    FILTER(Client,
+        Client[StartDate] <= MAX('Date'[Date]) &&
+        (ISBLANK(Client[EndDate]) || Client[EndDate] >= MIN('Date'[Date]))
+    )
+)
+
+6. Deployment and Service Scenarios
+
+Q16. Users are not seeing the latest data. How do you troubleshoot refresh issues?
+Answer:
+
+Check dataset refresh history in Power BI Service.
+
+Validate data gateway connection.
+
+Check credentials for data source.
+
+Validate schedule settings and refresh limits.
+
+Q17. How do you share reports securely with a client outside your organization?
+Answer:
+
+Publish to a workspace with Premium capacity.
+
+Use Power BI App to share with external users.
+
+Ensure they are added as guest users in Azure AD.
+
+Q18. Your report contains sensitive financial data. How do you restrict access?
+Answer:
+
+Implement Row-Level Security (RLS) in the data model.
+
+Restrict access to workspace/report in Power BI Service.
+
+Use Azure Active Directory group-based roles.
+
+7. Optimization and Performance Tuning
+
+Q19. Your report takes time to load visuals. What would you optimize?
+Answer:
+
+Minimize number of visuals per page.
+
+Use DAX measures instead of calculated columns.
+
+Aggregate large tables (summary tables).
+
+Reduce use of complex slicers.
+
+Use star schema.
+
+Avoid bi-directional relationships unless necessary.
+
+Q20. When would you use Incremental Refresh?
+Answer:
+
+When dealing with large datasets where only new or changed data needs to be refreshed.
+
+Reduces refresh time and resource usage.
+
+8. Power BI and External Tools
+
+Q21. How do you use DAX Studio to troubleshoot performance?
+Answer:
+
+Connect to your model.
+
+Use Server Timings and Query Plan to analyze DAX query performance.
+
+Q22. What is the use of Tabular Editor in Power BI?
+Answer:
+
+Allows advanced modeling.
+
+Bulk creation of measures/columns.
+
+Maintain calculation groups and format strings.
+
+
+
+
+
+
+
+
